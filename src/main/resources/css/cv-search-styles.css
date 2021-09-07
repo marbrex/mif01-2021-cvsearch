@@ -1,34 +1,22 @@
-#root {
-    -fx-background-color: rgb(100, 100, 120);
-}
-
 .skill-label {
-    -fx-background-color: silver;
-    -fx-background-radius: 10px;
-    -fx-border-color: black;
-    -fx-border-width: 2px;
-    -fx-border-radius: 10px;
+    -fx-background-color: lightblue;
+    -fx-background-radius: 5px;
+    -fx-border-color: silver;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
     -fx-padding: 3px 5px;
     -fx-font-weight: bold;
-    -fx-font-size: 15px;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
 }
 
 .cv {
-    -fx-background-color: silver;
-    -fx-background-radius: 10px;
-    -fx-border-color: black;
-    -fx-border-width: 2px;
-    -fx-border-radius: 10px;
+    -fx-background-color: lightgray;
+    -fx-background-radius: 5px;
+    -fx-border-color: gray;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
     -fx-padding: 3px 5px;
-    -fx-font-weight: bold;
-    -fx-font-size: 15px;
-}
-
-.cv StackPane {
-    -fx-border-color: black;
-    -fx-border-width: 0 0 2px 0;
-}
-
-#search-btn {
-    -fx-background-color: lime;
+    -fx-font-size: 14px;
 }

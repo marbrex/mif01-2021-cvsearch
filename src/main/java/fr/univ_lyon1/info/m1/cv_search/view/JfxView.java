@@ -5,131 +5,114 @@ import java.io.File;
 import fr.univ_lyon1.info.m1.cv_search.model.Applicant;
 import fr.univ_lyon1.info.m1.cv_search.model.ApplicantList;
 import fr.univ_lyon1.info.m1.cv_search.model.ApplicantListBuilder;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 public class JfxView {
-    private HBox searchSkillsBox;
-    private VBox resultBox;
 
-    /**
-     * Create the main view of the application.
-     */
-    public JfxView(Stage stage, int width, int height) {
-        // Name of window
-        stage.setTitle("Search for CV");
+  @FXML
+  private BorderPane root;
 
-        VBox root = new VBox();
+  @FXML
+  private Button addSkillBtn;
 
-        Node newSkillBox = createNewSkillWidget();
-        root.getChildren().add(newSkillBox);
+  @FXML
+  private TextField addSkillField;
 
-        Node searchSkillsBox = createCurrentSearchSkillsWidget();
-        root.getChildren().add(searchSkillsBox);
-        
+  @FXML
+  private FlowPane skillLabelContainer;
 
-        Node search = createSearchWidget();
-        root.getChildren().add(search);
+  @FXML
+  private Button searchBtn;
 
-        Node resultBox = createResultsWidget();
-        root.getChildren().add(resultBox);
+  @FXML
+  private TilePane applicantCardList;
 
-        // Everything's ready: add it to the scene and display it
-        Scene scene = new Scene(root, width, height);
-        stage.setScene(scene);
-        stage.show();
-    }
-    
+  public JfxView() {
+    System.out.println("IN JfxView CONSTRUCTOR");
+  }
 
-    /**
-     * Create the text field to enter a new skill.
-     */
-    private Node createNewSkillWidget() {
-        HBox newSkillBox = new HBox();
-        Label labelSkill = new Label("Skill:");
-        TextField textField = new TextField();
-        Button submitButton = new Button("Add skill");
-        newSkillBox.getChildren().addAll(labelSkill, textField, submitButton);
-        newSkillBox.setSpacing(10);
+  private Label createSkillLabel(String text) {
+    Label skillLabel = new Label(text);
+    skillLabel.getStyleClass().add("skill-label");
 
-        EventHandler<ActionEvent> skillHandler = new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                String text = textField.getText().strip();
-                if (text.equals("")) {
-                    return; // Do nothing
-                }
+    skillLabel.setOnMouseClicked(mouseEvent -> {
+      skillLabelContainer.getChildren().remove(skillLabel);
+    });
 
-                Button skillBtn = new Button(text);
-                searchSkillsBox.getChildren().add(skillBtn);
-                skillBtn.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        searchSkillsBox.getChildren().remove(skillBtn);
-                    }
-                });
+    return skillLabel;
+  }
 
-                textField.setText("");
-                textField.requestFocus();
-            }
-        };
-        submitButton.setOnAction(skillHandler);
-        textField.setOnAction(skillHandler);
-        return newSkillBox;
+  private void searchApplicants() {
+
+    applicantCardList.getChildren().clear();
+
+    // build applicants' list
+    ApplicantList listApplicants = new ApplicantListBuilder(new File(".")).build();
+
+    for (Applicant a : listApplicants) {
+      boolean selected = false;
+      for (Node skill : skillLabelContainer.getChildren()) {
+        String skillName = ((Label) skill).getText();
+        if (a.getSkill(skillName) > 50) {
+          selected = true;
+          break;
+        }
+      }
+      if (selected) {
+        applicantCardList.getChildren().add(createApplicantCard(a.getName()));
+      }
     }
 
-    /**
-     * Create the widget showing the list of applicants.
-     */
-    private Node createResultsWidget() {
-        resultBox = new VBox();
-        return resultBox;
-    }
+  }
 
-    /**
-     * Create the widget used to trigger the search.
-     */
-    private Node createSearchWidget() {
-        Button search = new Button("Search");
-        search.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                // TODO
-                ApplicantList listApplicants
-                    = new ApplicantListBuilder(new File(".")).build();
-                resultBox.getChildren().clear();
-                for (Applicant a : listApplicants) {
-                    boolean selected = true;
-                    for (Node skill : searchSkillsBox.getChildren()) {
-                        String skillName = ((Button) skill).getText();
-                        if (a.getSkill(skillName) < 50) {
-                            selected = false;
-                            break;
-                        }
-                    }
-                    if (selected) {
-                        resultBox.getChildren().add(new Label(a.getName()));
-                    }
-                }
-            }
-        });
-        return search;
-    }
+  private VBox createApplicantCard(String name) {
+    VBox card = new VBox();
+    card.getStyleClass().add("cv");
 
-    /**
-     * Create the widget showing the list of skills currently searched
-     * for.
-     */
-    private Node createCurrentSearchSkillsWidget() {
-        searchSkillsBox = new HBox();
-        return searchSkillsBox;
-    }
+    Label applicantName = new Label(name);
+    card.getChildren().add(applicantName);
+
+    return card;
+  }
+
+  /**
+   * The FXML loader will call the initialize() method after the loading of the FXML document is
+   * complete.
+   */
+  @FXML
+  private void initialize() {
+    System.out.println("IN INIT");
+
+    addSkillBtn.setOnMouseClicked(mouseEvent -> {
+      String skillEntered = addSkillField.getCharacters().toString();
+
+        if (skillEntered.equals("")) {
+            return;
+        }
+
+      Label skillLabel = createSkillLabel(skillEntered);
+      skillLabelContainer.getChildren().add(skillLabel);
+
+      addSkillField.setText("");
+    });
+
+    searchBtn.setOnMouseClicked(mouseEvent -> searchApplicants());
+
+    HBox.setHgrow(searchBtn, Priority.ALWAYS);
+    searchBtn.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
+    HBox.setHgrow(addSkillField, Priority.ALWAYS);
+    addSkillField.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
+  }
 }
