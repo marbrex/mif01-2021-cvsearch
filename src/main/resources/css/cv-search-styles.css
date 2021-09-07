@@ -1,0 +1,34 @@
+#root {
+    -fx-background-color: rgb(100, 100, 120);
+}
+
+.skill-label {
+    -fx-background-color: silver;
+    -fx-background-radius: 10px;
+    -fx-border-color: black;
+    -fx-border-width: 2px;
+    -fx-border-radius: 10px;
+    -fx-padding: 3px 5px;
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+}
+
+.cv {
+    -fx-background-color: silver;
+    -fx-background-radius: 10px;
+    -fx-border-color: black;
+    -fx-border-width: 2px;
+    -fx-border-radius: 10px;
+    -fx-padding: 3px 5px;
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+}
+
+.cv StackPane {
+    -fx-border-color: black;
+    -fx-border-width: 0 0 2px 0;
+}
+
+#search-btn {
+    -fx-background-color: lime;
+}
