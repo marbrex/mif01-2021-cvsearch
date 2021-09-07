@@ -1,7 +1,6 @@
 package fr.univ_lyon1.info.m1.cv_search.view;
 
 import java.io.File;
-
 import fr.univ_lyon1.info.m1.cv_search.model.Applicant;
 import fr.univ_lyon1.info.m1.cv_search.model.ApplicantList;
 import fr.univ_lyon1.info.m1.cv_search.model.ApplicantListBuilder;
@@ -15,10 +14,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
+import javafx.scene.control.ComboBox;
+import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
+ 
 public class JfxView {
     private HBox searchSkillsBox;
     private VBox resultBox;
+    private ComboBox strategySkillsBox;
 
     /**
      * Create the main view of the application.
@@ -34,7 +37,7 @@ public class JfxView {
 
         Node searchSkillsBox = createCurrentSearchSkillsWidget();
         root.getChildren().add(searchSkillsBox);
-        
+
 
         Node search = createSearchWidget();
         root.getChildren().add(search);
@@ -132,4 +135,19 @@ public class JfxView {
         searchSkillsBox = new HBox();
         return searchSkillsBox;
     }
+
+    /**
+     * Create the widget for candidates selection buy average skill lvl.
+     *
+     */
+     private Node createNewStrategyWidget(){
+         ObservableList<String> options = 
+         FXCollections.observableArrayList(
+             "All >= 50",
+             "All >= 60",
+             "Average >= 50"
+         );
+         strategySkillsBox = new ComboBox(options);
+         return strategySkillsBox;
+     }
 }
