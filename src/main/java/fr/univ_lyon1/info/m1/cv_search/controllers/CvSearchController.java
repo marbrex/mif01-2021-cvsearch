@@ -1,4 +1,4 @@
-package fr.univ_lyon1.info.m1.cv_search.view;
+package fr.univ_lyon1.info.m1.cv_search.controllers;
 
 import java.io.File;
 
@@ -8,6 +8,7 @@ import fr.univ_lyon1.info.m1.cv_search.model.ApplicantListBuilder;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -17,7 +18,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 
-public class JfxView {
+public class CvSearchController {
 
   @FXML
   private BorderPane root;
@@ -37,7 +38,10 @@ public class JfxView {
   @FXML
   private TilePane applicantCardList;
 
-  public JfxView() {
+  @FXML
+  private ChoiceBox stratWhiteBox;
+
+  public CvSearchController() {
     System.out.println("IN JfxView CONSTRUCTOR");
   }
 
