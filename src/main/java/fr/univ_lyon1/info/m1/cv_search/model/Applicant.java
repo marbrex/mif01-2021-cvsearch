@@ -27,4 +27,13 @@ public class Applicant {
     public void setName(String name) {
         this.name = name;
     }
+
+    public float getMeanSkills(){
+        float meanSkills = 0;
+        for (int i = 0; i < this.skills.size(); ++i){
+            meanSkills += skills.get(i);
+        }
+        meanSkills /= this.skills.size();
+        return meanSkills;
+    }
 }
