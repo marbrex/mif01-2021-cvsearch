@@ -2,7 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
@@ -59,7 +59,7 @@
                               <Label text="Strategy" BorderPane.alignment="CENTER" />
                            </left>
                            <right>
-                              <ChoiceBox fx:id="stratWhiteBox" prefWidth="150.0" BorderPane.alignment="CENTER" />
+                              <ComboBox fx:id="stratWhiteList" prefWidth="150.0" BorderPane.alignment="CENTER" />
                            </right>
                         </BorderPane>
                      </children>

@@ -5,10 +5,13 @@ import java.io.File;
 import fr.univ_lyon1.info.m1.cv_search.model.Applicant;
 import fr.univ_lyon1.info.m1.cv_search.model.ApplicantList;
 import fr.univ_lyon1.info.m1.cv_search.model.ApplicantListBuilder;
+import java.util.HashMap;
+import java.util.Map;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -39,7 +42,7 @@ public class CvSearchController {
   private TilePane applicantCardList;
 
   @FXML
-  private ChoiceBox stratWhiteBox;
+  private ComboBox<String> stratWhiteList;
 
   public CvSearchController() {
     System.out.println("IN JfxView CONSTRUCTOR");
@@ -56,6 +59,15 @@ public class CvSearchController {
     return skillLabel;
   }
 
+  private Map<String, String> convertToMap(String parameter) {
+    final Map<String, String> res = new HashMap<>();
+    String[] splitList = parameter.split(" ");
+    res.put("scope", splitList[0]);
+    res.put("sign", splitList[1]);
+    res.put("value", splitList[2]);
+    return res;
+  }
+
   private void searchApplicants() {
 
     applicantCardList.getChildren().clear();
@@ -63,17 +75,59 @@ public class CvSearchController {
     // build applicants' list
     ApplicantList listApplicants = new ApplicantListBuilder(new File(".")).build();
 
-    for (Applicant a : listApplicants) {
-      boolean selected = false;
-      for (Node skill : skillLabelContainer.getChildren()) {
-        String skillName = ((Label) skill).getText();
-        if (a.getSkill(skillName) > 50) {
-          selected = true;
-          break;
+    String selectedStrat = stratWhiteList.getSelectionModel().getSelectedItem();
+    Map selectedStratMap = convertToMap(selectedStrat);
+
+    int wantedSkillsCount = skillLabelContainer.getChildren().size();
+
+    if (selectedStratMap.get("scope").equals("All")) {
+
+      for (Applicant a : listApplicants) {
+        int matchSkillsCount = 0;
+
+        for (Node skill : skillLabelContainer.getChildren()) {
+          String skillName = ((Label) skill).getText();
+
+          if (selectedStratMap.get("sign").equals(">=")) {
+            if (a.getSkill(skillName) >= Integer.parseInt(selectedStratMap.get("value").toString())) {
+              matchSkillsCount++;
+            }
+          }
+          else if (selectedStratMap.get("sign").equals("<=")) {
+            if (a.getSkill(skillName) <= Integer.parseInt(selectedStratMap.get("value").toString())) {
+              matchSkillsCount++;
+            }
+          }
+        }
+
+        if (matchSkillsCount == wantedSkillsCount) {
+          applicantCardList.getChildren().add(createApplicantCard(a.getName()));
         }
       }
-      if (selected) {
-        applicantCardList.getChildren().add(createApplicantCard(a.getName()));
+    }
+    else if (selectedStratMap.get("scope").equals("Average")) {
+
+      for (Applicant a : listApplicants) {
+        int skillLevelSum = 0;
+        int averageSkill = 0;
+
+        for (Node skill : skillLabelContainer.getChildren()) {
+          String skillName = ((Label) skill).getText();
+          skillLevelSum += a.getSkill(skillName);
+        }
+
+        averageSkill = skillLevelSum / wantedSkillsCount;
+
+        if (selectedStratMap.get("sign").equals(">=")) {
+          if (averageSkill >= Integer.parseInt(selectedStratMap.get("value").toString())) {
+            applicantCardList.getChildren().add(createApplicantCard(a.getName()));
+          }
+        }
+        else if (selectedStratMap.get("sign").equals("<=")) {
+          if (averageSkill <= Integer.parseInt(selectedStratMap.get("value").toString())) {
+            applicantCardList.getChildren().add(createApplicantCard(a.getName()));
+          }
+        }
       }
     }
 
@@ -117,6 +171,17 @@ public class CvSearchController {
 
     HBox.setHgrow(addSkillField, Priority.ALWAYS);
     addSkillField.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
+    stratWhiteList.getItems().add("All >= 50");
+    stratWhiteList.getItems().add("All >= 60");
+    stratWhiteList.getItems().add("All <= 50");
+    stratWhiteList.getItems().add("Average >= 50");
+    stratWhiteList.getItems().add("Average >= 60");
+
+    // Setting the first element as default, that is
+    stratWhiteList.getSelectionModel().select(0);
+
+
 
   }
 }

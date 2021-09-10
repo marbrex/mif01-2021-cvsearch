@@ -20,3 +20,6 @@
     -fx-padding: 3px 5px;
     -fx-font-size: 14px;
 }
+
+.split-pane:horizontal > .split-pane-divider {
+}
