@@ -13,6 +13,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -43,6 +46,12 @@ public class CvSearchController {
 
   @FXML
   private ComboBox<String> stratWhiteList;
+
+  @FXML
+  private ComboBox<String> scopeSelector;
+
+  @FXML
+  private Spinner<Integer> valueSelector;
 
   public CvSearchController() {
     System.out.println("IN JfxView CONSTRUCTOR");
@@ -143,6 +152,20 @@ public class CvSearchController {
     return card;
   }
 
+  private void initStrategySelector() {
+
+    SpinnerValueFactory<Integer> svf = new IntegerSpinnerValueFactory(0, 100, 50, 1);
+    valueSelector.setValueFactory(svf);
+
+    scopeSelector.getItems().add("All");
+    scopeSelector.getItems().add("Average");
+    scopeSelector.getItems().add("At least one");
+
+    // Setting the first element as default, that is
+    scopeSelector.getSelectionModel().select(0);
+
+  }
+
   /**
    * The FXML loader will call the initialize() method after the loading of the FXML document is
    * complete.
@@ -172,6 +195,8 @@ public class CvSearchController {
     HBox.setHgrow(addSkillField, Priority.ALWAYS);
     addSkillField.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
+    scopeSelector.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
     stratWhiteList.getItems().add("All >= 50");
     stratWhiteList.getItems().add("All >= 60");
     stratWhiteList.getItems().add("All <= 50");
@@ -181,7 +206,7 @@ public class CvSearchController {
     // Setting the first element as default, that is
     stratWhiteList.getSelectionModel().select(0);
 
-
+    initStrategySelector();
 
   }
 }
