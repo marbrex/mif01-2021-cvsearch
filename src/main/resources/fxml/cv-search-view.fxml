@@ -57,14 +57,6 @@
                         <Insets bottom="10.0" />
                      </padding>
                      <children>
-                        <BorderPane>
-                           <left>
-                              <Label text="Strategy" BorderPane.alignment="CENTER" />
-                           </left>
-                           <right>
-                              <ComboBox fx:id="stratWhiteList" prefWidth="150.0" BorderPane.alignment="CENTER" />
-                           </right>
-                        </BorderPane>
                         <HBox alignment="CENTER" spacing="5.0" VBox.vgrow="ALWAYS">
                            <children>
                               <VBox HBox.hgrow="SOMETIMES">
@@ -78,7 +70,7 @@
                                     <Label text="Sign" />
                                     <BorderPane>
                                        <left>
-                                          <ToggleButton id="sign-selector-less" mnemonicParsing="false" text="&lt;=" BorderPane.alignment="CENTER">
+                                          <ToggleButton id="sign-selector-less" fx:id="signSelectorLess" mnemonicParsing="false" text="&lt;=" BorderPane.alignment="CENTER">
                                              <toggleGroup>
                                                 <ToggleGroup fx:id="signToggleGroup" />
                                              </toggleGroup>
@@ -88,7 +80,7 @@
                                           </ToggleButton>
                                        </left>
                                        <right>
-                                          <ToggleButton id="sign-selector-greater" mnemonicParsing="false" selected="true" text="&gt;=" toggleGroup="$signToggleGroup" BorderPane.alignment="CENTER" />
+                                          <ToggleButton id="sign-selector-greater" fx:id="signSelectorGreater" mnemonicParsing="false" selected="true" text="&gt;=" toggleGroup="$signToggleGroup" BorderPane.alignment="CENTER" />
                                        </right>
                                     </BorderPane>
                                  </children>

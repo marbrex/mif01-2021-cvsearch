@@ -5,18 +5,16 @@ import java.io.File;
 import fr.univ_lyon1.info.m1.cv_search.model.Applicant;
 import fr.univ_lyon1.info.m1.cv_search.model.ApplicantList;
 import fr.univ_lyon1.info.m1.cv_search.model.ApplicantListBuilder;
-import java.util.HashMap;
-import java.util.Map;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -45,10 +43,13 @@ public class CvSearchController {
   private TilePane applicantCardList;
 
   @FXML
-  private ComboBox<String> stratWhiteList;
+  private ComboBox<String> scopeSelector;
 
   @FXML
-  private ComboBox<String> scopeSelector;
+  private ToggleButton signSelectorLess;
+
+  @FXML
+  private ToggleButton signSelectorGreater;
 
   @FXML
   private Spinner<Integer> valueSelector;
@@ -68,14 +69,14 @@ public class CvSearchController {
     return skillLabel;
   }
 
-  private Map<String, String> convertToMap(String parameter) {
-    final Map<String, String> res = new HashMap<>();
-    String[] splitList = parameter.split(" ");
-    res.put("scope", splitList[0]);
-    res.put("sign", splitList[1]);
-    res.put("value", splitList[2]);
-    return res;
-  }
+//  private Map<String, String> convertToMap(String parameter) {
+//    final Map<String, String> res = new HashMap<>();
+//    String[] splitList = parameter.split(" ");
+//    res.put("scope", splitList[0]);
+//    res.put("sign", splitList[1]);
+//    res.put("value", splitList[2]);
+//    return res;
+//  }
 
   private void searchApplicants() {
 
@@ -84,12 +85,14 @@ public class CvSearchController {
     // build applicants' list
     ApplicantList listApplicants = new ApplicantListBuilder(new File(".")).build();
 
-    String selectedStrat = stratWhiteList.getSelectionModel().getSelectedItem();
-    Map selectedStratMap = convertToMap(selectedStrat);
+//    String selectedStrat = stratWhiteList.getSelectionModel().getSelectedItem();
+//    Map selectedStratMap = convertToMap(selectedStrat);
 
     int wantedSkillsCount = skillLabelContainer.getChildren().size();
+    String selectedScope = scopeSelector.getSelectionModel().getSelectedItem();
+    int selectedValue = valueSelector.getValue();
 
-    if (selectedStratMap.get("scope").equals("All")) {
+    if (selectedScope.equals("All")) {
 
       for (Applicant a : listApplicants) {
         int matchSkillsCount = 0;
@@ -97,13 +100,13 @@ public class CvSearchController {
         for (Node skill : skillLabelContainer.getChildren()) {
           String skillName = ((Label) skill).getText();
 
-          if (selectedStratMap.get("sign").equals(">=")) {
-            if (a.getSkill(skillName) >= Integer.parseInt(selectedStratMap.get("value").toString())) {
+          if (signSelectorGreater.isSelected()) {
+            if (a.getSkill(skillName) >= selectedValue) {
               matchSkillsCount++;
             }
           }
-          else if (selectedStratMap.get("sign").equals("<=")) {
-            if (a.getSkill(skillName) <= Integer.parseInt(selectedStratMap.get("value").toString())) {
+          else if (signSelectorLess.isSelected()) {
+            if (a.getSkill(skillName) <= selectedValue) {
               matchSkillsCount++;
             }
           }
@@ -114,7 +117,7 @@ public class CvSearchController {
         }
       }
     }
-    else if (selectedStratMap.get("scope").equals("Average")) {
+    else if (selectedScope.equals("Average")) {
 
       for (Applicant a : listApplicants) {
         int skillLevelSum = 0;
@@ -127,13 +130,13 @@ public class CvSearchController {
 
         averageSkill = skillLevelSum / wantedSkillsCount;
 
-        if (selectedStratMap.get("sign").equals(">=")) {
-          if (averageSkill >= Integer.parseInt(selectedStratMap.get("value").toString())) {
+        if (signSelectorGreater.isSelected()) {
+          if (averageSkill >= selectedValue) {
             applicantCardList.getChildren().add(createApplicantCard(a.getName()));
           }
         }
-        else if (selectedStratMap.get("sign").equals("<=")) {
-          if (averageSkill <= Integer.parseInt(selectedStratMap.get("value").toString())) {
+        else if (signSelectorLess.isSelected()) {
+          if (averageSkill <= selectedValue) {
             applicantCardList.getChildren().add(createApplicantCard(a.getName()));
           }
         }
@@ -196,15 +199,6 @@ public class CvSearchController {
     addSkillField.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
     scopeSelector.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-
-    stratWhiteList.getItems().add("All >= 50");
-    stratWhiteList.getItems().add("All >= 60");
-    stratWhiteList.getItems().add("All <= 50");
-    stratWhiteList.getItems().add("Average >= 50");
-    stratWhiteList.getItems().add("Average >= 60");
-
-    // Setting the first element as default, that is
-    stratWhiteList.getSelectionModel().select(0);
 
     initStrategySelector();
 
