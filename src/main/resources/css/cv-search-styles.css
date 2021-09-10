@@ -20,3 +20,14 @@
     -fx-padding: 3px 5px;
     -fx-font-size: 14px;
 }
+
+#sign-selector-greater {
+    -fx-border-radius: 0 3px 3px 0;
+    -fx-background-radius: 0 3px 3px 0;
+}
+
+#sign-selector-less {
+    -fx-border-radius: 3px 0 0 3px;
+    -fx-background-radius: 3px 0 0 3px;
+}
+

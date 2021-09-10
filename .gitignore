@@ -1,0 +1,13 @@
+# IntelliJ IDEA project configuration files
+.idea/
+*.iml
+*.iws
+
+# Eclipse project configuration files
+.classpath
+.project
+.settings/
+
+
+# Executables
+target/

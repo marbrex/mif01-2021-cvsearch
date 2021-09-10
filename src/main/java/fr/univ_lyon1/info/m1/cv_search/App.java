@@ -12,11 +12,11 @@ import javafx.fxml.FXMLLoader;
  */
 public class App extends Application {
 
-  final private double windowWidth = 900;
-  final private double windowHeight = 700;
+  final private double windowWidth = 600;
+  final private double windowHeight = 400;
 
-  final private double windowMinWidth = 620;
-  final private double windowMinHeight = 500;
+  final private double windowMinWidth = 600;
+  final private double windowMinHeight = 400;
 
   private static Scene scene;
   private static Stage stage;
