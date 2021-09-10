@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Applicant {
-    Map<String, Integer> skills = new HashMap<>();
-    String name;
+    private Map<String, Integer> skills = new HashMap<>();
+    private String name;
 
     public int getSkill(String string) {
         return skills.getOrDefault(string, 0);

@@ -83,16 +83,20 @@
 
     <!-- Checks for whitespace                               -->
     <!-- See https://checkstyle.org/config_whitespace.html -->
+    <!-- MM: not forbidden officially.
     <module name="FileTabCharacter"/>
+    -->
 
     <!-- Miscellaneous other checks.                   -->
     <!-- See https://checkstyle.org/config_misc.html -->
+    <!-- MM: disabled, to avoid disturbing students with invisible stuff.
     <module name="RegexpSingleline">
        <property name="format" value="\s+$"/>
        <property name="minimum" value="0"/>
        <property name="maximum" value="0"/>
        <property name="message" value="Line has trailing spaces."/>
     </module>
+-->
 
     <!-- Checks for Headers                                -->
     <!-- See https://checkstyle.org/config_header.html   -->
@@ -108,17 +112,20 @@
         <module name="InvalidJavadocPosition"/>
         <module name="JavadocMethod">
             <!-- MM: This is often included in the short description, don't force the tag. -->
-           <property name="allowMissingReturnTag" value="true"/>
+            <property name="allowMissingReturnTag" value="true"/>
+            <property name="allowMissingParamTags" value="true"/>
         </module>
         <module name="JavadocType"/>
         <!-- MM: Disabled: if the methods are documented, private variables may not need JavaDoc
         <module name="JavadocVariable"/>
         -->
         <module name="JavadocStyle"/>
+        <!-- MM: the special-case for setters and getters is too strict
         <module name="MissingJavadocMethod">
-            <!-- MM: Javadoc for getters and setters are usually redundant with the name. -->
+            <!- MM: Javadoc for getters and setters are usually redundant with the name. ->
             <property name="allowMissingPropertyJavadoc" value="true"/>
         </module>
+    -->
 
         <!-- Checks for Naming Conventions.                  -->
         <!-- See https://checkstyle.org/config_naming.html -->
@@ -182,7 +189,10 @@
         -->
         <module name="IllegalInstantiation"/>
         <module name="InnerAssignment"/>
+        <!-- MM: Disabled, to make checkstyle a bit less verbose, but it's still
+            a good idea to avoid magic numbers 
         <module name="MagicNumber"/>
+        -->
         <module name="MissingSwitchDefault"/>
         <module name="MultipleVariableDeclarations"/>
         <module name="SimplifyBooleanExpression"/>
@@ -201,7 +211,10 @@
         <!-- Miscellaneous other checks.                   -->
         <!-- See https://checkstyle.org/config_misc.html -->
         <module name="ArrayTypeStyle"/>
+        <!-- MM: disabled because it makes the code (or the warnings) rather verbose.
+            TODO: re-activate it, next year?
         <module name="FinalParameters"/>
+         -->
         <module name="TodoComment"/>
         <module name="UpperEll"/>
 

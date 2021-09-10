@@ -34,7 +34,7 @@ public class JfxView {
 
         Node searchSkillsBox = createCurrentSearchSkillsWidget();
         root.getChildren().add(searchSkillsBox);
-        
+
 
         Node search = createSearchWidget();
         root.getChildren().add(search);
@@ -47,7 +47,7 @@ public class JfxView {
         stage.setScene(scene);
         stage.show();
     }
-    
+
 
     /**
      * Create the text field to enter a new skill.

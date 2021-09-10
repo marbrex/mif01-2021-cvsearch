@@ -111,12 +111,11 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <!-- https://maven.apache.org/plugins/maven-checkstyle-plugin/usage.html -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.1</version>
                 <executions>
                     <execution>
                         <id>validate</id>
@@ -135,7 +134,6 @@
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
 </project>
