@@ -8,7 +8,16 @@
     -fx-font-weight: bold;
     -fx-text-fill: white;
     -fx-font-size: 12px;
+}
+
+.skill-label-close {
+    -fx-opacity: 1;
+    -fx-text-fill: gray;
+}
+
+.skill-label-close:hover {
     -fx-cursor: hand;
+    -fx-opacity: 0.6;
 }
 
 .cv {
@@ -31,3 +40,19 @@
     -fx-background-radius: 3px 0 0 3px;
 }
 
+ScrollPane, TilePane {
+    -fx-border-style: none;
+    -fx-effect: none;
+    -fx-border-color: transparent;
+    -fx-border-width: 0px;
+    -fx-background-color: transparent;
+}
+
+#cv-sort-bar {
+    /*-fx-border-width: 0 0 1px 0;*/
+    /*-fx-border-color: gray;*/
+}
+
+.bold {
+    -fx-font-style: bold;
+}
