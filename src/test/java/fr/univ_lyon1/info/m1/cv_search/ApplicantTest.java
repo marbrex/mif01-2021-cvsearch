@@ -25,7 +25,6 @@ public class ApplicantTest {
         // Then
         assertThat(70, is(a.getSkill("c++")));
         assertThat("John Smith", is(a.getName()));
-        assertThat(2 + 2, is(5)); // TODO: Obviously incorrect, hence should fail. Make sure it does and remove this buggy assertion.
     }
 
     @Test
