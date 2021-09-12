@@ -1,5 +1,6 @@
 package fr.univ_lyon1.info.m1.cv_search.model;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +10,10 @@ public class Applicant {
 
     public int getSkill(String string) {
         return skills.getOrDefault(string, 0);
+    }
+
+    public Map<String, Integer> getSkills() {
+        return Collections.unmodifiableMap(skills);
     }
 
     public void setSkill(String string, int value) {
