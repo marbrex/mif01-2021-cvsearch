@@ -88,6 +88,98 @@ public class CvSearchController {
     return skillLabel;
   }
 
+//  private Map<String, String> convertToMap(String parameter) {
+//    final Map<String, String> res = new HashMap<>();
+//    String[] splitList = parameter.split(" ");
+//    res.put("scope", splitList[0]);
+//    res.put("sign", splitList[1]);
+//    res.put("value", splitList[2]);
+//    return res;
+//  }
+
+  private void selectedScopeAll(ApplicantList listApplicants, int selectedValue, int wantedSkillsCount){
+
+    for (Applicant a : listApplicants) {
+      int matchSkillsCount = 0;
+
+      for (Node skill : skillLabelContainer.getChildren()) {
+        String skillName = ((Label) skill).getText();
+
+        if (signSelectorGreater.isSelected()) {
+          if (a.getSkill(skillName) >= selectedValue) {
+            matchSkillsCount++;
+          }
+        }
+        else if (signSelectorLess.isSelected()) {
+          if (a.getSkill(skillName) <= selectedValue) {
+            matchSkillsCount++;
+          }
+        }
+      }
+
+      if (matchSkillsCount == wantedSkillsCount && matchSkillsCount != 0) {
+        applicantCardList.getChildren().add(createApplicantCard(a));
+      }
+    }
+  }
+
+  private void selectedScopeAverage(ApplicantList listApplicants, int selectedValue, int wantedSkillsCount){
+
+    for (Applicant a : listApplicants) {
+      int skillLevelSum = 0;
+      int averageSkill = 0;
+
+      for (Node skill : skillLabelContainer.getChildren()) {
+        String skillName = ((Label) skill).getText();
+        skillLevelSum += a.getSkill(skillName);
+      }
+      if(wantedSkillsCount != 0){
+        averageSkill = skillLevelSum / wantedSkillsCount;
+      }
+      else {
+        averageSkill = 1;
+      }
+
+      if (signSelectorGreater.isSelected()) {
+        if (averageSkill >= selectedValue) {
+          applicantCardList.getChildren().add(createApplicantCard(a));
+        }
+      }
+      else if (signSelectorLess.isSelected()) {
+        if (averageSkill <= selectedValue) {
+          applicantCardList.getChildren().add(createApplicantCard(a));
+        }
+      }
+    }
+  }
+
+  private void selectedScopeAtLeastOne(ApplicantList listApplicants, int selectedValue){
+
+    for (Applicant a : listApplicants) {
+      boolean selected = false;
+
+      for (Node skill : skillLabelContainer.getChildren()) {
+        String skillName = ((Label) skill).getText();
+
+        if (signSelectorGreater.isSelected()) {
+          if (a.getSkill(skillName) >= selectedValue) {
+            selected = true;
+            break;
+          }
+        } else if (signSelectorLess.isSelected()) {
+          if (a.getSkill(skillName) <= selectedValue) {
+            selected = true;
+            break;
+          }
+        }
+      }
+
+      if (selected) {
+        applicantCardList.getChildren().add(createApplicantCard(a));
+      }
+    }
+  }
+
   private void searchApplicants() {
 
     // clearing already existing list of applicants
@@ -103,82 +195,14 @@ public class CvSearchController {
     int selectedValue = valueSelector.getValue();
 
     if (selectedScope.equals("All")) {
-
-      for (Applicant a : listApplicants) {
-        int matchSkillsCount = 0;
-
-        for (Node skill : skillLabelContainer.getChildren()) {
-          String skillName = ((Label) skill).getText();
-
-          if (signSelectorGreater.isSelected()) {
-            if (a.getSkill(skillName) >= selectedValue) {
-              matchSkillsCount++;
-            }
-          }
-          else if (signSelectorLess.isSelected()) {
-            if (a.getSkill(skillName) <= selectedValue) {
-              matchSkillsCount++;
-            }
-          }
-        }
-
-        if (matchSkillsCount == wantedSkillsCount && matchSkillsCount != 0) {
-          applicantCardList.getChildren().add(createApplicantCard(a));
-        }
-      }
+      selectedScopeAll(listApplicants, selectedValue, wantedSkillsCount);
     }
     else if (selectedScope.equals("Average")) {
-
-      for (Applicant a : listApplicants) {
-        int skillLevelSum = 0;
-        int averageSkill = 0;
-
-        for (Node skill : skillLabelContainer.getChildren()) {
-          String skillName = ((Label) skill).getText();
-          skillLevelSum += a.getSkill(skillName);
-        }
-
-        averageSkill = skillLevelSum / wantedSkillsCount;
-
-        if (signSelectorGreater.isSelected()) {
-          if (averageSkill >= selectedValue) {
-            applicantCardList.getChildren().add(createApplicantCard(a));
-          }
-        }
-        else if (signSelectorLess.isSelected()) {
-          if (averageSkill <= selectedValue) {
-            applicantCardList.getChildren().add(createApplicantCard(a));
-          }
-        }
-      }
+      selectedScopeAverage(listApplicants, selectedValue, wantedSkillsCount);
     }
     else if (selectedScope.equals("At least one")) {
-
-      for (Applicant a : listApplicants) {
-        boolean selected = false;
-
-        for (Node skill : skillLabelContainer.getChildren()) {
-          String skillName = ((Label) skill).getText();
-
-          if (signSelectorGreater.isSelected()) {
-            if (a.getSkill(skillName) >= selectedValue) {
-              selected = true;
-              break;
-            }
-          }
-          else if (signSelectorLess.isSelected()) {
-            if (a.getSkill(skillName) <= selectedValue) {
-              selected = true;
-              break;
-            }
-          }
-        }
-
-        if (selected) {
-          applicantCardList.getChildren().add(createApplicantCard(a));
-        }
+      selectedScopeAtLeastOne(listApplicants, selectedValue);
       }
-    }
 
     cvFoundCountLbl.setText(String.valueOf(cvFoundCount));
     if (cvFoundCount == 0) {
@@ -186,7 +210,6 @@ public class CvSearchController {
       errorMessage.setOpacity(0.5);
       applicantCardList.getChildren().add(errorMessage);
     }
-
   }
 
   private VBox createApplicantCard(Applicant a) {

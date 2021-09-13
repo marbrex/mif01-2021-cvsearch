@@ -12,11 +12,17 @@ import javafx.fxml.FXMLLoader;
  */
 public class App extends Application {
 
-  final private double windowWidth = 600;
-  final private double windowHeight = 400;
+  /**
+   *  Window width.
+   */
+  private final double windowWidth = 600;
+  /**
+   *  Window height.
+   */
+  private final double windowHeight = 400;
 
-  final private double windowMinWidth = 600;
-  final private double windowMinHeight = 400;
+  private final double windowMinWidth = 600;
+  private final double windowMinHeight = 400;
 
   private static Scene scene;
   private static Stage stage;
@@ -24,7 +30,6 @@ public class App extends Application {
   /**
    * With javafx, start() is called when the application is launched.
    */
-  @Override
   public void start(Stage primaryStage) throws Exception {
 
     FXMLLoader loader = new FXMLLoader();
@@ -32,11 +37,11 @@ public class App extends Application {
     Parent root = loader.load();
 
     Scene scene = new Scene(root, windowWidth, windowHeight);
-    scene.getStylesheets()
-        .add(getClass().getResource("/css/cv-search-styles.css").toExternalForm());
+    if(getClass().getResource("/css/cv-search-styles.css").toExternalForm() != null){
+      scene.getStylesheets().add(getClass().getResource("/css/cv-search-styles.css").toExternalForm());
+    }
 
     // Image appIcon = new Image(getClass().getResourceAsStream("/img/app-icon.png"));
-
     primaryStage.setMinWidth(windowMinWidth);
     primaryStage.setMinHeight(windowMinHeight);
     primaryStage.setTitle("CV Search App");
