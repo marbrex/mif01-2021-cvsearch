@@ -1,8 +1,10 @@
 package fr.univ_lyon1.info.m1.cv_search.controllers;
 
+import fr.univ_lyon1.info.m1.cv_search.model.Applicant;
+import fr.univ_lyon1.info.m1.cv_search.model.ApplicantList;
+import fr.univ_lyon1.info.m1.cv_search.model.ApplicantListBuilder;
 import java.io.File;
 
-import fr.univ_lyon1.info.m1.cv_search.model.*;
 import java.util.Map;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -71,7 +73,7 @@ public class CvSearchController {
     System.out.println("IN JfxView CONSTRUCTOR");
   }
 
-  private Label createSkillLabel(String text) {
+  private Label createSkillLabel(final String text) {
     Label skillLabel = new Label(text);
     skillLabel.getStyleClass().add("skill-label");
 
@@ -212,7 +214,7 @@ public class CvSearchController {
     }
   }
 
-  private VBox createApplicantCard(Applicant a) {
+  private VBox createApplicantCard(final Applicant a) {
     cvFoundCount++;
 
     VBox card = new VBox();
@@ -229,7 +231,7 @@ public class CvSearchController {
     applicantSkillsLbl.setFont(Font.font("Regular", FontWeight.BOLD, 12.0));
     card.getChildren().add(applicantSkillsLbl);
 
-    for(Map.Entry<String, Integer> skill : a.getSkills().entrySet()) {
+    for (Map.Entry<String, Integer> skill : a.getSkills().entrySet()) {
       Label applicantSkills = new Label(skill.getKey() + ": " + skill.getValue());
       card.getChildren().add(applicantSkills);
     }
@@ -262,9 +264,9 @@ public class CvSearchController {
     addSkillBtn.setOnMouseClicked(mouseEvent -> {
       String skillEntered = addSkillField.getCharacters().toString();
 
-        if (skillEntered.equals("")) {
-            return;
-        }
+      if (skillEntered.equals("")) {
+        return;
+      }
 
       Label skillLabel = createSkillLabel(skillEntered);
       skillLabelContainer.getChildren().add(skillLabel);
