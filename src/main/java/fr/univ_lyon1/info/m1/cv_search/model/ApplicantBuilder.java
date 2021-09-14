@@ -33,12 +33,12 @@ public class ApplicantBuilder {
             throw new Error(e);
         }
 
-        a.setName((String)map.get("name"));
+        a.setName((String) map.get("name"));
 
         // Cast may fail if the Yaml is incorrect. Ideally we should provide
         // clean error messages.
         @SuppressWarnings("unchecked")
-        Map<String, Integer> skills = (Map<String, Integer>)map.get("skills");
+        Map<String, Integer> skills = (Map<String, Integer>) map.get("skills");
 
         for (String skill : skills.keySet()) {
             Integer value = skills.get(skill);

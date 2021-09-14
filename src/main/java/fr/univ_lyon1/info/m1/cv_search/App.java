@@ -7,6 +7,8 @@ import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 
+import java.util.Objects;
+
 /**
  * Main class for the application (structure imposed by JavaFX).
  */
@@ -30,18 +32,16 @@ public class App extends Application {
   /**
    * With javafx, start() is called when the application is launched.
    */
-  public void start(Stage primaryStage) throws Exception {
+  public final void start(final Stage primaryStage) throws Exception {
 
     FXMLLoader loader = new FXMLLoader();
     loader.setLocation(getClass().getResource("/fxml/cv-search-view.fxml"));
     Parent root = loader.load();
 
-    Scene scene = new Scene(root, windowWidth, windowHeight);
-    if(getClass().getResource("/css/cv-search-styles.css").toExternalForm() != null){
-      scene.getStylesheets().add(getClass().getResource("/css/cv-search-styles.css").toExternalForm());
-    }
+    scene = new Scene(root, windowWidth, windowHeight);
+    String styleSheet = Objects.requireNonNull(getClass().getResource("/css/cv-search-styles.css")).toExternalForm();
+    scene.getStylesheets().add(styleSheet);
 
-    // Image appIcon = new Image(getClass().getResourceAsStream("/img/app-icon.png"));
     primaryStage.setMinWidth(windowMinWidth);
     primaryStage.setMinHeight(windowMinHeight);
     primaryStage.setTitle("CV Search App");
@@ -55,7 +55,7 @@ public class App extends Application {
     setStage(primaryStage);
   }
 
-  public void setScene(Scene scene) {
+  public void setScene(final Scene scene) {
     App.scene = scene;
   }
 
