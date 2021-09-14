@@ -4,6 +4,7 @@ import java.io.File;
 
 import fr.univ_lyon1.info.m1.cv_search.model.*;
 
+import java.util.Locale;
 import java.util.Map;
 
 import javafx.fxml.FXML;
@@ -27,9 +28,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
 public class CvSearchController {
-
-    @FXML
-    private BorderPane root;
 
     @FXML
     private Button addSkillBtn;
@@ -105,7 +103,7 @@ public class CvSearchController {
             int matchSkillsCount = 0;
 
             for (Node skill : skillLabelContainer.getChildren()) {
-                String skillName = ((Label) skill).getText();
+                String skillName = ((Label) skill).getText().toLowerCase(Locale.ROOT);
 
                 if (signSelectorGreater.isSelected()) {
                     if (a.getSkill(skillName) >= selectedValue) {
