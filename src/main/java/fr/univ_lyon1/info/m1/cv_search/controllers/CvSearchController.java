@@ -1,10 +1,10 @@
 package fr.univ_lyon1.info.m1.cv_search.controllers;
 
+import fr.univ_lyon1.info.m1.cv_search.model.Applicant;
+import fr.univ_lyon1.info.m1.cv_search.model.ApplicantList;
+import fr.univ_lyon1.info.m1.cv_search.model.ApplicantListBuilder;
 import java.io.File;
 
-import fr.univ_lyon1.info.m1.cv_search.model.*;
-
-import java.util.Locale;
 import java.util.Map;
 
 import javafx.fxml.FXML;
@@ -18,7 +18,6 @@ import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -68,11 +67,16 @@ public class CvSearchController {
     private int cvFoundCount = 0;
 
     public CvSearchController() {
-        System.out.println("IN JfxView CONSTRUCTOR");
+        System.out.println("IN CvSearchController CONSTRUCTOR");
     }
 
-    private Label createSkillLabel(String text) {
-        Label skillLabel = new Label(text);
+    /**
+     * Creates and returns a label with the specified text.
+     * @param text Skill to add
+     * @return Skill Label
+     */
+    private Label createSkillLabel(final String text) {
+        Label skillLabel = new Label(text.toLowerCase());
         skillLabel.getStyleClass().add("skill-label");
 
         Label closeBtn = new Label("X");
@@ -88,22 +92,13 @@ public class CvSearchController {
         return skillLabel;
     }
 
-//  private Map<String, String> convertToMap(String parameter) {
-//    final Map<String, String> res = new HashMap<>();
-//    String[] splitList = parameter.split(" ");
-//    res.put("scope", splitList[0]);
-//    res.put("sign", splitList[1]);
-//    res.put("value", splitList[2]);
-//    return res;
-//  }
-
-    private void selectedScopeAll(ApplicantList listApplicants, int selectedValue, int wantedSkillsCount) {
+    private void selectedScopeAll(final ApplicantList listApplicants, final int selectedValue, final int wantedSkillsCount) {
 
         for (Applicant a : listApplicants) {
             int matchSkillsCount = 0;
 
             for (Node skill : skillLabelContainer.getChildren()) {
-                String skillName = ((Label) skill).getText().toLowerCase(Locale.ROOT);
+                String skillName = ((Label) skill).getText();
 
                 if (signSelectorGreater.isSelected()) {
                     if (a.getSkill(skillName) >= selectedValue) {
@@ -122,7 +117,7 @@ public class CvSearchController {
         }
     }
 
-    private void selectedScopeAverage(ApplicantList listApplicants, int selectedValue, int wantedSkillsCount) {
+    private void selectedScopeAverage(final ApplicantList listApplicants, final int selectedValue, final int wantedSkillsCount) {
 
         for (Applicant a : listApplicants) {
             int skillLevelSum = 0;
@@ -150,7 +145,7 @@ public class CvSearchController {
         }
     }
 
-    private void selectedScopeAtLeastOne(ApplicantList listApplicants, int selectedValue) {
+    private void selectedScopeAtLeastOne(final ApplicantList listApplicants, final int selectedValue) {
 
         for (Applicant a : listApplicants) {
             boolean selected = false;
@@ -177,6 +172,10 @@ public class CvSearchController {
         }
     }
 
+    /**
+     * Searches for the CVs, and displays them if they're matching
+     * user specified parameters.
+     */
     private void searchApplicants() {
 
         // clearing already existing list of applicants
@@ -191,7 +190,7 @@ public class CvSearchController {
         String selectedScope = scopeSelector.getSelectionModel().getSelectedItem();
         int selectedValue = valueSelector.getValue();
 
-        switch (selectedScope){
+        switch (selectedScope) {
             case "All":
                 selectedScopeAll(listApplicants, selectedValue, wantedSkillsCount);
                 break;
@@ -200,6 +199,9 @@ public class CvSearchController {
                 break;
             case "At least one":
                 selectedScopeAtLeastOne(listApplicants, selectedValue);
+                break;
+            default:
+                selectedScopeAll(listApplicants, selectedValue, wantedSkillsCount);
                 break;
         }
 
@@ -211,7 +213,12 @@ public class CvSearchController {
         }
     }
 
-    private VBox createApplicantCard(Applicant a) {
+    /**
+     * Creates and returns a CV card of the specified applicant.
+     * @param a Applicant
+     * @return A rectangular node, representing the CV
+     */
+    private VBox createApplicantCard(final Applicant a) {
         cvFoundCount++;
 
         VBox card = new VBox();
@@ -236,11 +243,50 @@ public class CvSearchController {
         return card;
     }
 
+    /**
+     * Initializing search controls.
+     */
     private void initStrategySelector() {
 
+        // setting an event handler
+        addSkillBtn.setOnMouseClicked(mouseEvent -> {
+            String skillEntered = addSkillField.getCharacters().toString();
+
+            if (skillEntered.equals("")) {
+                return;
+            }
+
+            // before creating a label, let's see
+            // whether there is already a label with that skill
+            boolean lblExists = skillLabelContainer.getChildren().stream().map(n -> (Label) n)
+                .anyMatch(skillLbl -> skillLbl.getText().equalsIgnoreCase(skillEntered));
+
+            // and if there is no a label with that skill
+            // we'll create a new one
+            if (!lblExists) {
+                Label skillLabel = createSkillLabel(skillEntered);
+                skillLabelContainer.getChildren().add(skillLabel);
+            }
+
+            // resetting the skill input field
+            addSkillField.setText("");
+        });
+
+        // setting an event handler
+        searchBtn.setOnMouseClicked(mouseEvent -> searchApplicants());
+
+        // just for styling, needed to resize controls on window resizing
+        HBox.setHgrow(searchBtn, Priority.ALWAYS);
+        searchBtn.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        HBox.setHgrow(addSkillField, Priority.ALWAYS);
+        addSkillField.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        scopeSelector.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
+        // init strategy value selector
         SpinnerValueFactory<Integer> svf = new IntegerSpinnerValueFactory(0, 100, 50, 1);
         valueSelector.setValueFactory(svf);
 
+        // init strategy scope selector
         scopeSelector.getItems().add("All");
         scopeSelector.getItems().add("Average");
         scopeSelector.getItems().add("At least one");
@@ -251,37 +297,9 @@ public class CvSearchController {
     }
 
     /**
-     * The FXML loader will call the initialize() method after the loading of the FXML document is
-     * complete.
+     * Initializing sorting controls.
      */
-    @FXML
-    private void initialize() {
-        System.out.println("IN INIT");
-
-        addSkillBtn.setOnMouseClicked(mouseEvent -> {
-            String skillEntered = addSkillField.getCharacters().toString();
-
-            if (skillEntered.equals("")) {
-                return;
-            }
-
-            Label skillLabel = createSkillLabel(skillEntered);
-            skillLabelContainer.getChildren().add(skillLabel);
-
-            addSkillField.setText("");
-        });
-
-        searchBtn.setOnMouseClicked(mouseEvent -> searchApplicants());
-
-        HBox.setHgrow(searchBtn, Priority.ALWAYS);
-        searchBtn.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-
-        HBox.setHgrow(addSkillField, Priority.ALWAYS);
-        addSkillField.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-
-        scopeSelector.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-
-        initStrategySelector();
+    private void initSortSelector() {
 
         sortBySelector.getItems().add("First Name");
         sortBySelector.getItems().add("Last Name");
@@ -297,8 +315,22 @@ public class CvSearchController {
         orderBySelector.getSelectionModel().select(0);
 
         sortBySelector.setOnAction(actionEvent -> {
+            // TODO
             System.out.println("ON ACTION !");
         });
+
+    }
+
+    /**
+     * The FXML loader will call the initialize() method after the loading of the FXML document is
+     * complete.
+     */
+    @FXML
+    private void initialize() {
+        System.out.println("IN INIT");
+
+        initStrategySelector();
+        initSortSelector();
 
     }
 }
