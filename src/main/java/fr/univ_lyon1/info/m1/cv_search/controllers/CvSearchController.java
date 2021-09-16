@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategy;
-import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAll;
 import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAtLeastOne;
 import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAverage;
 import javafx.fxml.FXML;
@@ -48,7 +47,7 @@ public class CvSearchController {
     private TilePane applicantCardList;
 
     @FXML
-    private ComboBox<String> scopeSelector;
+    private ComboBox<SearchStrategy> scopeSelector;
 
     @FXML
     private ToggleButton signSelectorLess;
@@ -68,11 +67,9 @@ public class CvSearchController {
     @FXML
     private Label cvFoundCountLbl;
 
-    private SearchStrategy searchStrategy;
-
     private static int wantedSkillsCount = 0;
     private static int selectedValue = 0;
-    private static final List<Label> skillLabels = new ArrayList<>();
+    private static List<Label> skillLabels = new ArrayList<>();
     private static boolean isGreaterSignSelected = true;
     private static boolean isLessSignSelected = false;
 
@@ -165,7 +162,7 @@ public class CvSearchController {
             skillLabels.add((Label) node);
         });
 
-        List<Applicant> applicants = searchStrategy.search();
+        List<Applicant> applicants = scopeSelector.getSelectionModel().getSelectedItem().search();
 
         cvFoundCountLbl.setText(String.valueOf(applicants.size()));
         if (applicants.isEmpty()) {
@@ -255,29 +252,11 @@ public class CvSearchController {
         valueSelector.setValueFactory(svf);
 
         // init strategy scope selector
-        scopeSelector.getItems().add("All");
-        scopeSelector.getItems().add("Average");
-        scopeSelector.getItems().add("At least one");
+        scopeSelector.getItems().add(new SearchStrategyAverage());
+        scopeSelector.getItems().add(new SearchStrategyAtLeastOne());
 
         // Setting the first element as default, that is "All"
         scopeSelector.getSelectionModel().select(0);
-
-        scopeSelector.setOnAction(actionEvent -> {
-
-            String selected = scopeSelector.getSelectionModel().getSelectedItem();
-
-            switch (selected) {
-                case "All":
-                    searchStrategy = new SearchStrategyAll();
-                    break;
-                case "Average":
-                    searchStrategy = new SearchStrategyAverage();
-                    break;
-                case "At least one":
-                    searchStrategy = new SearchStrategyAtLeastOne();
-                    break;
-            }
-        });
 
         signSelectorGreater.setOnAction(actionEvent -> {
             System.out
