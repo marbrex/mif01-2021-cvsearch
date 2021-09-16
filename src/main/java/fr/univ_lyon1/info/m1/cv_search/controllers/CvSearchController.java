@@ -3,6 +3,7 @@ package fr.univ_lyon1.info.m1.cv_search.controllers;
 import fr.univ_lyon1.info.m1.cv_search.model.Applicant;
 import fr.univ_lyon1.info.m1.cv_search.model.ApplicantList;
 import fr.univ_lyon1.info.m1.cv_search.model.ApplicantListBuilder;
+
 import java.io.File;
 
 import java.util.Map;
@@ -72,6 +73,7 @@ public class CvSearchController {
 
     /**
      * Creates and returns a label with the specified text.
+     *
      * @param text Skill to add
      * @return Skill Label
      */
@@ -92,7 +94,8 @@ public class CvSearchController {
         return skillLabel;
     }
 
-    private void selectedScopeAll(final ApplicantList listApplicants, final int selectedValue, final int wantedSkillsCount) {
+    private void selectedScopeAll(final ApplicantList listApplicants, final int selectedValue,
+                                  final int wantedSkillsCount) {
 
         for (Applicant a : listApplicants) {
             int matchSkillsCount = 0;
@@ -117,7 +120,8 @@ public class CvSearchController {
         }
     }
 
-    private void selectedScopeAverage(final ApplicantList listApplicants, final int selectedValue, final int wantedSkillsCount) {
+    private void selectedScopeAverage(final ApplicantList listApplicants, final int selectedValue,
+                                      final int wantedSkillsCount) {
 
         for (Applicant a : listApplicants) {
             int skillLevelSum = 0;
@@ -145,7 +149,8 @@ public class CvSearchController {
         }
     }
 
-    private void selectedScopeAtLeastOne(final ApplicantList listApplicants, final int selectedValue) {
+    private void selectedScopeAtLeastOne(final ApplicantList listApplicants,
+                                         final int selectedValue) {
 
         for (Applicant a : listApplicants) {
             boolean selected = false;
@@ -215,6 +220,7 @@ public class CvSearchController {
 
     /**
      * Creates and returns a CV card of the specified applicant.
+     *
      * @param a Applicant
      * @return A rectangular node, representing the CV
      */
