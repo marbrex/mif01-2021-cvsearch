@@ -117,6 +117,15 @@
                 </executions>
             </plugin>
 
+<!--            <plugin>-->
+<!--                <groupId>com.puppycrawl.tools</groupId>-->
+<!--                <artifactId>checkstyle</artifactId>-->
+<!--                <version>8.45.1</version>-->
+<!--                <configuration>-->
+<!--                    <configLocation>src/main/config/checkstyle.xml</configLocation>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
+
             <plugin>
                 <!-- https://maven.apache.org/plugins/maven-checkstyle-plugin/usage.html -->
                 <groupId>org.apache.maven.plugins</groupId>

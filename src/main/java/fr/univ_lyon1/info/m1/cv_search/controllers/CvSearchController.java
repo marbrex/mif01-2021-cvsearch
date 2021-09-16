@@ -2,12 +2,15 @@ package fr.univ_lyon1.info.m1.cv_search.controllers;
 
 import fr.univ_lyon1.info.m1.cv_search.model.Applicant;
 import fr.univ_lyon1.info.m1.cv_search.model.ApplicantList;
-import fr.univ_lyon1.info.m1.cv_search.model.ApplicantListBuilder;
 
-import java.io.File;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategy;
+import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAll;
+import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAtLeastOne;
+import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAverage;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -65,7 +68,33 @@ public class CvSearchController {
     @FXML
     private Label cvFoundCountLbl;
 
-    private int cvFoundCount = 0;
+    private SearchStrategy searchStrategy;
+
+    private static int wantedSkillsCount = 0;
+    private static int selectedValue = 0;
+    private static final List<Label> skillLabels = new ArrayList<>();
+    private static boolean isGreaterSignSelected = true;
+    private static boolean isLessSignSelected = false;
+
+    public static int getWantedSkillsCount() {
+        return wantedSkillsCount;
+    }
+
+    public static int getSelectedValue() {
+        return selectedValue;
+    }
+
+    public static List<Label> getSkillLabels() {
+        return skillLabels;
+    }
+
+    public static boolean isGreaterSignSelected() {
+        return isGreaterSignSelected;
+    }
+
+    public static boolean isLessSignSelected() {
+        return isLessSignSelected;
+    }
 
     public CvSearchController() {
         System.out.println("IN CvSearchController CONSTRUCTOR");
@@ -120,63 +149,6 @@ public class CvSearchController {
         }
     }
 
-    private void selectedScopeAverage(final ApplicantList listApplicants, final int selectedValue,
-                                      final int wantedSkillsCount) {
-
-        for (Applicant a : listApplicants) {
-            int skillLevelSum = 0;
-            int averageSkill;
-
-            for (Node skill : skillLabelContainer.getChildren()) {
-                String skillName = ((Label) skill).getText();
-                skillLevelSum += a.getSkill(skillName);
-            }
-            if (wantedSkillsCount != 0) {
-                averageSkill = skillLevelSum / wantedSkillsCount;
-            } else {
-                averageSkill = 1;
-            }
-
-            if (signSelectorGreater.isSelected()) {
-                if (averageSkill >= selectedValue) {
-                    applicantCardList.getChildren().add(createApplicantCard(a));
-                }
-            } else if (signSelectorLess.isSelected()) {
-                if (averageSkill <= selectedValue) {
-                    applicantCardList.getChildren().add(createApplicantCard(a));
-                }
-            }
-        }
-    }
-
-    private void selectedScopeAtLeastOne(final ApplicantList listApplicants,
-                                         final int selectedValue) {
-
-        for (Applicant a : listApplicants) {
-            boolean selected = false;
-
-            for (Node skill : skillLabelContainer.getChildren()) {
-                String skillName = ((Label) skill).getText();
-
-                if (signSelectorGreater.isSelected()) {
-                    if (a.getSkill(skillName) >= selectedValue) {
-                        selected = true;
-                        break;
-                    }
-                } else if (signSelectorLess.isSelected()) {
-                    if (a.getSkill(skillName) <= selectedValue) {
-                        selected = true;
-                        break;
-                    }
-                }
-            }
-
-            if (selected) {
-                applicantCardList.getChildren().add(createApplicantCard(a));
-            }
-        }
-    }
-
     /**
      * Searches for the CVs, and displays them if they're matching
      * user specified parameters.
@@ -185,36 +157,27 @@ public class CvSearchController {
 
         // clearing already existing list of applicants
         applicantCardList.getChildren().clear();
-        cvFoundCount = 0;
+        skillLabels.clear();
 
-        // building applicants' list,
-        // that is loading the data from the ".yaml" files into the ApplicantList class
-        ApplicantList listApplicants = new ApplicantListBuilder(new File(".")).build();
+        wantedSkillsCount = skillLabelContainer.getChildren().size();
+        selectedValue = valueSelector.getValue();
+        skillLabelContainer.getChildren().forEach(node -> {
+            skillLabels.add((Label) node);
+        });
 
-        int wantedSkillsCount = skillLabelContainer.getChildren().size();
-        String selectedScope = scopeSelector.getSelectionModel().getSelectedItem();
-        int selectedValue = valueSelector.getValue();
+        List<Applicant> applicants = searchStrategy.search();
 
-        switch (selectedScope) {
-            case "All":
-                selectedScopeAll(listApplicants, selectedValue, wantedSkillsCount);
-                break;
-            case "Average":
-                selectedScopeAverage(listApplicants, selectedValue, wantedSkillsCount);
-                break;
-            case "At least one":
-                selectedScopeAtLeastOne(listApplicants, selectedValue);
-                break;
-            default:
-                selectedScopeAll(listApplicants, selectedValue, wantedSkillsCount);
-                break;
-        }
-
-        cvFoundCountLbl.setText(String.valueOf(cvFoundCount));
-        if (cvFoundCount == 0) {
+        cvFoundCountLbl.setText(String.valueOf(applicants.size()));
+        if (applicants.isEmpty()) {
+            // No applicant found
             Label errorMessage = new Label("No Applicants Found !");
             errorMessage.setOpacity(0.5);
             applicantCardList.getChildren().add(errorMessage);
+        } else {
+            // Create CV cards
+            for (Applicant applicant : applicants) {
+                applicantCardList.getChildren().add(createApplicantCard(applicant));
+            }
         }
     }
 
@@ -225,7 +188,6 @@ public class CvSearchController {
      * @return A rectangular node, representing the CV
      */
     private VBox createApplicantCard(final Applicant a) {
-        cvFoundCount++;
 
         VBox card = new VBox();
         card.getStyleClass().add("cv");
@@ -299,6 +261,34 @@ public class CvSearchController {
 
         // Setting the first element as default, that is "All"
         scopeSelector.getSelectionModel().select(0);
+
+        scopeSelector.setOnAction(actionEvent -> {
+
+            String selected = scopeSelector.getSelectionModel().getSelectedItem();
+
+            switch (selected) {
+                case "All":
+                    searchStrategy = new SearchStrategyAll();
+                    break;
+                case "Average":
+                    searchStrategy = new SearchStrategyAverage();
+                    break;
+                case "At least one":
+                    searchStrategy = new SearchStrategyAtLeastOne();
+                    break;
+            }
+        });
+
+        signSelectorGreater.setOnAction(actionEvent -> {
+            System.out
+                .println("signSelectorGreater pressed ! VALUE=" + signSelectorGreater.isSelected());
+            isGreaterSignSelected = signSelectorGreater.isSelected();
+        });
+
+        signSelectorLess.setOnAction(actionEvent -> {
+            System.out.println("signSelectorLess pressed ! VALUE=" + signSelectorLess.isSelected());
+            isLessSignSelected = signSelectorLess.isSelected();
+        });
 
     }
 
