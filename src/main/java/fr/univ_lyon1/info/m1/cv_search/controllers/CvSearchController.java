@@ -13,7 +13,7 @@ import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategy;
 import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAtLeastOne;
 import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAverage;
 import fr.univ_lyon1.info.m1.cv_search.model.SortApplicantsByName;
-import fr.univ_lyon1.info.m1.cv_search.model.SortApplicantsBySkillsNumber;
+import fr.univ_lyon1.info.m1.cv_search.model.SortApplicantsBySkillsAmount;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -158,6 +158,8 @@ public class CvSearchController {
      */
     private void searchApplicants() {
 
+        // clearing already existing list of applicants on the view
+        applicantCardList.getChildren().clear();
         skillLabels.clear();
 
         wantedSkillsCount = skillLabelContainer.getChildren().size();
@@ -166,14 +168,20 @@ public class CvSearchController {
             skillLabels.add((Label) node);
         });
 
+        if (!results.getList().isEmpty()) {
+            results.getList().clear();
+        }
         results.getList().addAll(scopeSelector.getSelectionModel().getSelectedItem().search());
         drawApplicantCards();
     }
 
     private void drawApplicantCards() {
 
-        // clearing already existing list of applicants
+        // clearing already existing list of applicants on the view
         applicantCardList.getChildren().clear();
+
+        // sorting the results
+        results.sort();
 
         cvFoundCountLbl.setText(String.valueOf(results.getList().size()));
         if (results.getList().isEmpty()) {
@@ -306,7 +314,7 @@ public class CvSearchController {
     private void initSortSelector() {
 
         sortBySelector.getItems().add(new SortApplicantsByName());
-        sortBySelector.getItems().add(new SortApplicantsBySkillsNumber());
+        sortBySelector.getItems().add(new SortApplicantsBySkillsAmount());
 
         // Setting the first element as default, that is "All"
         sortBySelector.getSelectionModel().select(0);
@@ -321,8 +329,13 @@ public class CvSearchController {
             // TODO
             System.out.println("Selected sort: "
                 + sortBySelector.getSelectionModel().getSelectedItem());
-            results.sort(sortBySelector.getSelectionModel().getSelectedItem());
-            drawApplicantCards();
+            results.setComparator(sortBySelector.getSelectionModel().getSelectedItem());
+
+            if (!skillLabels.isEmpty()) {
+                // Sorting only if search has been made
+                // otherwise ignore
+                drawApplicantCards();
+            }
         });
 
     }
