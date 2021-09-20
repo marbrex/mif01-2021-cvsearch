@@ -258,15 +258,33 @@ public class CvSearchController {
         // Setting the first element as default, that is "All"
         scopeSelector.getSelectionModel().select(0);
 
-        signSelectorGreater.setOnAction(actionEvent -> {
+        signSelectorGreater.setMouseTransparent(true);
+        signSelectorGreater.setOnMouseClicked(mouseEvent -> {
+            // normally the value here should always be TRUE
             System.out
                 .println("signSelectorGreater pressed ! VALUE=" + signSelectorGreater.isSelected());
             isGreaterSignSelected = signSelectorGreater.isSelected();
+
+            if (signSelectorGreater.isSelected()) {
+                // disabling interaction with this button
+                signSelectorGreater.setMouseTransparent(true);
+                // enabling interaction with another button
+                signSelectorLess.setMouseTransparent(false);
+                // needed for a proper working of the selector
+                // this variable is being accessed outside of the class
+                isLessSignSelected = false;
+            }
         });
 
-        signSelectorLess.setOnAction(actionEvent -> {
+        signSelectorLess.setOnMouseClicked(mouseEvent -> {
             System.out.println("signSelectorLess pressed ! VALUE=" + signSelectorLess.isSelected());
             isLessSignSelected = signSelectorLess.isSelected();
+
+            if (signSelectorLess.isSelected()) {
+                signSelectorLess.setMouseTransparent(true);
+                signSelectorGreater.setMouseTransparent(false);
+                isGreaterSignSelected = false;
+            }
         });
 
     }
