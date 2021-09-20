@@ -4,12 +4,16 @@ import fr.univ_lyon1.info.m1.cv_search.model.Applicant;
 import fr.univ_lyon1.info.m1.cv_search.model.ApplicantList;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import fr.univ_lyon1.info.m1.cv_search.model.ApplicantSearchResults;
 import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategy;
 import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAtLeastOne;
 import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAverage;
+import fr.univ_lyon1.info.m1.cv_search.model.SortApplicantsByName;
+import fr.univ_lyon1.info.m1.cv_search.model.SortApplicantsBySkillsNumber;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -59,13 +63,15 @@ public class CvSearchController {
     private Spinner<Integer> valueSelector;
 
     @FXML
-    private ComboBox<String> sortBySelector;
+    private ComboBox<Comparator<Applicant>> sortBySelector;
 
     @FXML
     private ComboBox<String> orderBySelector;
 
     @FXML
     private Label cvFoundCountLbl;
+
+    private ApplicantSearchResults results = new ApplicantSearchResults();
 
     private static int wantedSkillsCount = 0;
     private static int selectedValue = 0;
@@ -152,8 +158,6 @@ public class CvSearchController {
      */
     private void searchApplicants() {
 
-        // clearing already existing list of applicants
-        applicantCardList.getChildren().clear();
         skillLabels.clear();
 
         wantedSkillsCount = skillLabelContainer.getChildren().size();
@@ -162,17 +166,24 @@ public class CvSearchController {
             skillLabels.add((Label) node);
         });
 
-        List<Applicant> applicants = scopeSelector.getSelectionModel().getSelectedItem().search();
+        results.getList().addAll(scopeSelector.getSelectionModel().getSelectedItem().search());
+        drawApplicantCards();
+    }
 
-        cvFoundCountLbl.setText(String.valueOf(applicants.size()));
-        if (applicants.isEmpty()) {
+    private void drawApplicantCards() {
+
+        // clearing already existing list of applicants
+        applicantCardList.getChildren().clear();
+
+        cvFoundCountLbl.setText(String.valueOf(results.getList().size()));
+        if (results.getList().isEmpty()) {
             // No applicant found
             Label errorMessage = new Label("No Applicants Found !");
             errorMessage.setOpacity(0.5);
             applicantCardList.getChildren().add(errorMessage);
         } else {
             // Create CV cards
-            for (Applicant applicant : applicants) {
+            for (Applicant applicant : results.getList()) {
                 applicantCardList.getChildren().add(createApplicantCard(applicant));
             }
         }
@@ -294,22 +305,24 @@ public class CvSearchController {
      */
     private void initSortSelector() {
 
-        sortBySelector.getItems().add("First Name");
-        sortBySelector.getItems().add("Last Name");
-        sortBySelector.getItems().add("Chosen Skills");
+        sortBySelector.getItems().add(new SortApplicantsByName());
+        sortBySelector.getItems().add(new SortApplicantsBySkillsNumber());
 
         // Setting the first element as default, that is "All"
         sortBySelector.getSelectionModel().select(0);
 
-        orderBySelector.getItems().add("Low to High");
-        orderBySelector.getItems().add("High to Low");
+        orderBySelector.getItems().add("Ascending");
+        orderBySelector.getItems().add("Descending");
 
         // Setting the first element as default, that is "All"
         orderBySelector.getSelectionModel().select(0);
 
         sortBySelector.setOnAction(actionEvent -> {
             // TODO
-            System.out.println("ON ACTION !");
+            System.out.println("Selected sort: "
+                + sortBySelector.getSelectionModel().getSelectedItem());
+            results.sort(sortBySelector.getSelectionModel().getSelectedItem());
+            drawApplicantCards();
         });
 
     }

@@ -33,4 +33,11 @@ public class ApplicantList implements Iterable<Applicant> {
     public void setList(ApplicantList list) {
         this.list = list.list;
     }
+
+    /**
+     * Returns the content of the applicant list.
+     */
+    public List<Applicant> getList() {
+        return list;
+    }
 }
