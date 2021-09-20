@@ -7,69 +7,118 @@ import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 
+import java.util.Objects;
+
 /**
  * Main class for the application (structure imposed by JavaFX).
  */
 public class App extends Application {
 
-  final private double windowWidth = 600;
-  final private double windowHeight = 400;
+    /**
+     * Preferred Width of the window.
+     */
+    private final double windowWidth = 600;
 
-  final private double windowMinWidth = 600;
-  final private double windowMinHeight = 400;
+    /**
+     * Preferred Height of the window.
+     */
+    private final double windowHeight = 400;
 
-  private static Scene scene;
-  private static Stage stage;
+    /**
+     * Minimum Width of the window.
+     */
+    private final double windowMinWidth = 600;
 
-  /**
-   * With javafx, start() is called when the application is launched.
-   */
-  @Override
-  public void start(Stage primaryStage) throws Exception {
+    /**
+     * Minimum Height of the window.
+     */
+    private final double windowMinHeight = 400;
 
-    FXMLLoader loader = new FXMLLoader();
-    loader.setLocation(getClass().getResource("/fxml/cv-search-view.fxml"));
-    Parent root = loader.load();
+    /**
+     * Global Scene.
+     */
+    private static Scene scene;
 
-    Scene scene = new Scene(root, windowWidth, windowHeight);
-    scene.getStylesheets()
-        .add(getClass().getResource("/css/cv-search-styles.css").toExternalForm());
+    /**
+     * Global Stage.
+     */
+    private static Stage stage;
 
-    // Image appIcon = new Image(getClass().getResourceAsStream("/img/app-icon.png"));
+    /**
+     * With javafx, start() is called when the application is launched.
+     */
+    @Override
+    public final void start(final Stage primaryStage) throws Exception {
 
-    primaryStage.setMinWidth(windowMinWidth);
-    primaryStage.setMinHeight(windowMinHeight);
-    primaryStage.setTitle("CV Search App");
-    // primaryStage.getIcons().add(appIcon);
-    primaryStage.setScene(scene);
-    // primaryStage.setFullScreen(true);
-    primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
-    primaryStage.show();
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/fxml/cv-search-view.fxml"));
+        Parent root = loader.load();
 
-    setScene(scene);
-    setStage(primaryStage);
-  }
+        scene = new Scene(root, windowWidth, windowHeight);
+        String styleSheet =
+            Objects.requireNonNull(getClass().getResource("/css/cv-search-styles.css"))
+                .toExternalForm();
+        scene.getStylesheets().add(styleSheet);
 
-  public void setScene(Scene scene) {
-    App.scene = scene;
-  }
+//    Image appIcon = new Image(getClass()
+//        .getResourceAsStream("/img/app-icon.png"));
 
-  public static Scene getScene() {
-    return scene;
-  }
+        primaryStage.setMinWidth(windowMinWidth);
+        primaryStage.setMinHeight(windowMinHeight);
+        primaryStage.setTitle("CV Search App");
+        // primaryStage.getIcons().add(appIcon);
+        primaryStage.setScene(scene);
+        // primaryStage.setFullScreen(true);
+        primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+        primaryStage.show();
 
-  public void setStage(Stage stage) {
-    App.stage = stage;
-  }
+        setScene(scene);
+        setStage(primaryStage);
+    }
 
-  public static Stage getStage() {
-    return stage;
-  }
+    /**
+     * Set the global scene.
+     *
+     * @param myScene Scene to switch
+     */
+    public final void setScene(final Scene myScene) {
+        App.scene = myScene;
+    }
 
-  /**
-   * A main method in case the user launches the application using App as the main class.
-   */
-  public static void main(String[] args) {
-    Application.launch(args);
-  }
+    /**
+     * Get the global scene.
+     *
+     * @return Global Scene
+     */
+    public static Scene getScene() {
+        return scene;
+    }
+
+    /**
+     * Set the global stage.
+     *
+     * @param myStage Stage to switch
+     */
+    public final void setStage(final Stage myStage) {
+        App.stage = myStage;
+    }
+
+    /**
+     * Get the global stage.
+     *
+     * @return Global Stage
+     */
+    public static Stage getStage() {
+        return stage;
+    }
+
+    /**
+     * A main method in case the user launches
+     * the application using App as the main class.
+     *
+     * @param args Arguments passed to the program on launch
+     */
+    public static void main(final String[] args) {
+        Application.launch(args);
+    }
 }

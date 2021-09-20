@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane id="root" fx:id="root" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.univ_lyon1.info.m1.cv_search.controllers.CvSearchController">
+<BorderPane id="root" fx:id="root" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="fr.univ_lyon1.info.m1.cv_search.controllers.CvSearchController">
    <center>
       <SplitPane dividerPositions="0.4585561497326202" BorderPane.alignment="CENTER">
         <items>

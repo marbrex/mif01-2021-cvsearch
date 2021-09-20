@@ -54,5 +54,5 @@ ScrollPane, TilePane {
 }
 
 .bold {
-    -fx-font-style: bold;
+    -fx-font-weight: bold;
 }
