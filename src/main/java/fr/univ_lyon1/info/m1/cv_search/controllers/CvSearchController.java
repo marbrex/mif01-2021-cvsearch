@@ -1,19 +1,12 @@
 package fr.univ_lyon1.info.m1.cv_search.controllers;
 
-import fr.univ_lyon1.info.m1.cv_search.model.Applicant;
-import fr.univ_lyon1.info.m1.cv_search.model.ApplicantList;
+import fr.univ_lyon1.info.m1.cv_search.model.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import fr.univ_lyon1.info.m1.cv_search.model.ApplicantSearchResults;
-import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategy;
-import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAtLeastOne;
-import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAverage;
-import fr.univ_lyon1.info.m1.cv_search.model.SortApplicantsByName;
-import fr.univ_lyon1.info.m1.cv_search.model.SortApplicantsBySkillsAmount;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -132,27 +125,7 @@ public class CvSearchController {
     private void selectedScopeAll(final ApplicantList listApplicants, final int selectedValue,
                                   final int wantedSkillsCount) {
 
-        for (Applicant a : listApplicants) {
-            int matchSkillsCount = 0;
 
-            for (Node skill : skillLabelContainer.getChildren()) {
-                String skillName = ((Label) skill).getText();
-
-                if (signSelectorGreater.isSelected()) {
-                    if (a.getSkill(skillName) >= selectedValue) {
-                        matchSkillsCount++;
-                    }
-                } else if (signSelectorLess.isSelected()) {
-                    if (a.getSkill(skillName) <= selectedValue) {
-                        matchSkillsCount++;
-                    }
-                }
-            }
-
-            if (matchSkillsCount == wantedSkillsCount && matchSkillsCount != 0) {
-                applicantCardList.getChildren().add(createApplicantCard(a));
-            }
-        }
     }
 
     /**
@@ -234,7 +207,6 @@ public class CvSearchController {
      * Initializing search controls.
      */
     private void initStrategySelector() {
-
         // setting an event handler
         addSkillBtn.setOnMouseClicked(mouseEvent -> {
             String skillEntered = addSkillField.getCharacters().toString();
@@ -274,6 +246,7 @@ public class CvSearchController {
         valueSelector.setValueFactory(svf);
 
         // init strategy scope selector
+        scopeSelector.getItems().add(new SearchStrategyAll());
         scopeSelector.getItems().add(new SearchStrategyAverage());
         scopeSelector.getItems().add(new SearchStrategyAtLeastOne());
 
