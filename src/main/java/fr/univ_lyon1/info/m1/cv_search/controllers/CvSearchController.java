@@ -1,6 +1,13 @@
 package fr.univ_lyon1.info.m1.cv_search.controllers;
 
-import fr.univ_lyon1.info.m1.cv_search.model.*;
+import fr.univ_lyon1.info.m1.cv_search.model.Applicant;
+import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategy;
+import fr.univ_lyon1.info.m1.cv_search.model.ApplicantSearchResults;
+import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAverage;
+import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAtLeastOne;
+import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAll;
+import fr.univ_lyon1.info.m1.cv_search.model.SortApplicantsBySkillsAmount;
+import fr.univ_lyon1.info.m1.cv_search.model.SortApplicantsByName;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -8,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
@@ -120,12 +126,6 @@ public class CvSearchController {
         });
 
         return skillLabel;
-    }
-
-    private void selectedScopeAll(final ApplicantList listApplicants, final int selectedValue,
-                                  final int wantedSkillsCount) {
-
-
     }
 
     /**
