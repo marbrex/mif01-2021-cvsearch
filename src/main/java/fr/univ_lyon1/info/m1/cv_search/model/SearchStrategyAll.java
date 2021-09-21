@@ -1,7 +1,6 @@
 package fr.univ_lyon1.info.m1.cv_search.model;
 
 import fr.univ_lyon1.info.m1.cv_search.controllers.CvSearchController;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 
 import java.io.File;
@@ -30,6 +29,7 @@ public class SearchStrategyAll implements SearchStrategy {
 
                 if (CvSearchController.isGreaterSignSelected()) {
                     System.out.println("greater sign selected");
+
                     if (a.getSkill(skillName) >= CvSearchController.getSelectedValue()) {
                         matchSkillsCount++;
                         System.out.println("is greater or equal than Value");
@@ -55,5 +55,7 @@ public class SearchStrategyAll implements SearchStrategy {
         return res;
     }
     @Override
-    public String toString() { return "All"; }
+    public String toString() {
+        return "All";
+    }
 }
