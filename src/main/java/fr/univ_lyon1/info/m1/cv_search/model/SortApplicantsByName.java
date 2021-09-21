@@ -10,11 +10,6 @@ public class SortApplicantsByName implements Comparator<Applicant> {
     }
 
     @Override
-    public Comparator<Applicant> reversed() {
-        return null;
-    }
-
-    @Override
     public String toString() {
         return "Name";
     }

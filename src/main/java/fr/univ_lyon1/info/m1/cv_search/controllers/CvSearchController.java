@@ -66,7 +66,10 @@ public class CvSearchController {
     private ComboBox<Comparator<Applicant>> sortBySelector;
 
     @FXML
-    private ComboBox<String> orderBySelector;
+    private ToggleButton orderByAscend;
+
+    @FXML
+    private ToggleButton orderByDescend;
 
     @FXML
     private Label cvFoundCountLbl;
@@ -319,11 +322,27 @@ public class CvSearchController {
         // Setting the first element as default, that is "All"
         sortBySelector.getSelectionModel().select(0);
 
-        orderBySelector.getItems().add("Ascending");
-        orderBySelector.getItems().add("Descending");
+        orderByAscend.setOnMouseClicked(mouseEvent -> {
+            System.out.println("OrderByAscending pressed ! VALUE=" + orderByAscend.isSelected());
+            results.reverseOrder();
+            drawApplicantCards();
 
-        // Setting the first element as default, that is "All"
-        orderBySelector.getSelectionModel().select(0);
+            if (orderByAscend.isSelected()) {
+                orderByAscend.setMouseTransparent(true);
+                orderByDescend.setMouseTransparent(false);
+            }
+        });
+
+        orderByDescend.setOnMouseClicked(mouseEvent -> {
+            System.out.println("orderByDescending pressed ! VALUE=" + orderByDescend.isSelected());
+            results.reverseOrder();
+            drawApplicantCards();
+
+            if (orderByDescend.isSelected()) {
+                orderByDescend.setMouseTransparent(true);
+                orderByAscend.setMouseTransparent(false);
+            }
+        });
 
         sortBySelector.setOnAction(actionEvent -> {
             // TODO

@@ -18,6 +18,10 @@ public class ApplicantSearchResults extends ApplicantList {
         getList().sort(comparator);
     }
 
+    public void reverseOrder() {
+        comparator = comparator.reversed();
+    }
+
     public void sort(Comparator<Applicant> comparator) {
         getList().sort(comparator);
     }
