@@ -9,7 +9,7 @@ public class Applicant {
     private String name;
 
     public int getSkill(String string) {
-            return skills.getOrDefault(string, 0);
+        return skills.getOrDefault(string, 0);
     }
 
     public Map<String, Integer> getSkills() {
