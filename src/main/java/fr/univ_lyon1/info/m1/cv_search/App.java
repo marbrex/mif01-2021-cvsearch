@@ -49,7 +49,6 @@ public class App extends Application {
      */
     @Override
     public final void start(final Stage primaryStage) throws Exception {
-
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/fxml/cv-search-view.fxml"));
         Parent root = loader.load();
