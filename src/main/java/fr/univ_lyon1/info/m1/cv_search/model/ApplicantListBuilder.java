@@ -4,7 +4,7 @@ import java.io.File;
 
 public class ApplicantListBuilder {
 
-    File directory;
+    private File directory;
 
     public ApplicantListBuilder(File directory) {
         this.directory = directory;

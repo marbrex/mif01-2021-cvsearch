@@ -1,18 +1,20 @@
 package fr.univ_lyon1.info.m1.cv_search.controllers;
 
 import fr.univ_lyon1.info.m1.cv_search.model.Applicant;
-import fr.univ_lyon1.info.m1.cv_search.model.ApplicantList;
+import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategy;
+import fr.univ_lyon1.info.m1.cv_search.model.ApplicantSearchResults;
+import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAverage;
+import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAtLeastOne;
+import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAll;
+import fr.univ_lyon1.info.m1.cv_search.model.SortApplicantsBySkillsAmount;
+import fr.univ_lyon1.info.m1.cv_search.model.SortApplicantsByName;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategy;
-import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAll;
-import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAtLeastOne;
-import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAverage;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
@@ -48,7 +50,7 @@ public class CvSearchController {
     private TilePane applicantCardList;
 
     @FXML
-    private ComboBox<String> scopeSelector;
+    private ComboBox<SearchStrategy> scopeSelector;
 
     @FXML
     private ToggleButton signSelectorLess;
@@ -60,19 +62,22 @@ public class CvSearchController {
     private Spinner<Integer> valueSelector;
 
     @FXML
-    private ComboBox<String> sortBySelector;
+    private ComboBox<Comparator<Applicant>> sortBySelector;
 
     @FXML
-    private ComboBox<String> orderBySelector;
+    private ToggleButton orderByAscend;
+
+    @FXML
+    private ToggleButton orderByDescend;
 
     @FXML
     private Label cvFoundCountLbl;
 
-    private SearchStrategy searchStrategy;
+    private ApplicantSearchResults results = new ApplicantSearchResults();
 
     private static int wantedSkillsCount = 0;
     private static int selectedValue = 0;
-    private static final List<Label> skillLabels = new ArrayList<>();
+    private static List<Label> skillLabels = new ArrayList<>();
     private static boolean isGreaterSignSelected = true;
     private static boolean isLessSignSelected = false;
 
@@ -123,39 +128,13 @@ public class CvSearchController {
         return skillLabel;
     }
 
-    private void selectedScopeAll(final ApplicantList listApplicants, final int selectedValue,
-                                  final int wantedSkillsCount) {
-
-        for (Applicant a : listApplicants) {
-            int matchSkillsCount = 0;
-
-            for (Node skill : skillLabelContainer.getChildren()) {
-                String skillName = ((Label) skill).getText();
-
-                if (signSelectorGreater.isSelected()) {
-                    if (a.getSkill(skillName) >= selectedValue) {
-                        matchSkillsCount++;
-                    }
-                } else if (signSelectorLess.isSelected()) {
-                    if (a.getSkill(skillName) <= selectedValue) {
-                        matchSkillsCount++;
-                    }
-                }
-            }
-
-            if (matchSkillsCount == wantedSkillsCount && matchSkillsCount != 0) {
-                applicantCardList.getChildren().add(createApplicantCard(a));
-            }
-        }
-    }
-
     /**
      * Searches for the CVs, and displays them if they're matching
      * user specified parameters.
      */
     private void searchApplicants() {
 
-        // clearing already existing list of applicants
+        // clearing already existing list of applicants on the view
         applicantCardList.getChildren().clear();
         skillLabels.clear();
 
@@ -165,17 +144,30 @@ public class CvSearchController {
             skillLabels.add((Label) node);
         });
 
-        List<Applicant> applicants = searchStrategy.search();
+        if (!results.getList().isEmpty()) {
+            results.getList().clear();
+        }
+        results.getList().addAll(scopeSelector.getSelectionModel().getSelectedItem().search());
+        drawApplicantCards();
+    }
 
-        cvFoundCountLbl.setText(String.valueOf(applicants.size()));
-        if (applicants.isEmpty()) {
+    private void drawApplicantCards() {
+
+        // clearing already existing list of applicants on the view
+        applicantCardList.getChildren().clear();
+
+        // sorting the results
+        results.sort();
+
+        cvFoundCountLbl.setText(String.valueOf(results.getList().size()));
+        if (results.getList().isEmpty()) {
             // No applicant found
             Label errorMessage = new Label("No Applicants Found !");
             errorMessage.setOpacity(0.5);
             applicantCardList.getChildren().add(errorMessage);
         } else {
             // Create CV cards
-            for (Applicant applicant : applicants) {
+            for (Applicant applicant : results.getList()) {
                 applicantCardList.getChildren().add(createApplicantCard(applicant));
             }
         }
@@ -215,7 +207,6 @@ public class CvSearchController {
      * Initializing search controls.
      */
     private void initStrategySelector() {
-
         // setting an event handler
         addSkillBtn.setOnMouseClicked(mouseEvent -> {
             String skillEntered = addSkillField.getCharacters().toString();
@@ -255,39 +246,40 @@ public class CvSearchController {
         valueSelector.setValueFactory(svf);
 
         // init strategy scope selector
-        scopeSelector.getItems().add("All");
-        scopeSelector.getItems().add("Average");
-        scopeSelector.getItems().add("At least one");
+        scopeSelector.getItems().add(new SearchStrategyAll());
+        scopeSelector.getItems().add(new SearchStrategyAverage());
+        scopeSelector.getItems().add(new SearchStrategyAtLeastOne());
 
         // Setting the first element as default, that is "All"
         scopeSelector.getSelectionModel().select(0);
 
-        scopeSelector.setOnAction(actionEvent -> {
-
-            String selected = scopeSelector.getSelectionModel().getSelectedItem();
-
-            switch (selected) {
-                case "All":
-                    searchStrategy = new SearchStrategyAll();
-                    break;
-                case "Average":
-                    searchStrategy = new SearchStrategyAverage();
-                    break;
-                case "At least one":
-                    searchStrategy = new SearchStrategyAtLeastOne();
-                    break;
-            }
-        });
-
-        signSelectorGreater.setOnAction(actionEvent -> {
+        signSelectorGreater.setMouseTransparent(true);
+        signSelectorGreater.setOnMouseClicked(mouseEvent -> {
+            // normally the value here should always be TRUE
             System.out
                 .println("signSelectorGreater pressed ! VALUE=" + signSelectorGreater.isSelected());
             isGreaterSignSelected = signSelectorGreater.isSelected();
+
+            if (signSelectorGreater.isSelected()) {
+                // disabling interaction with this button
+                signSelectorGreater.setMouseTransparent(true);
+                // enabling interaction with another button
+                signSelectorLess.setMouseTransparent(false);
+                // needed for a proper working of the selector
+                // this variable is being accessed outside of the class
+                isLessSignSelected = false;
+            }
         });
 
-        signSelectorLess.setOnAction(actionEvent -> {
+        signSelectorLess.setOnMouseClicked(mouseEvent -> {
             System.out.println("signSelectorLess pressed ! VALUE=" + signSelectorLess.isSelected());
             isLessSignSelected = signSelectorLess.isSelected();
+
+            if (signSelectorLess.isSelected()) {
+                signSelectorLess.setMouseTransparent(true);
+                signSelectorGreater.setMouseTransparent(false);
+                isGreaterSignSelected = false;
+            }
         });
 
     }
@@ -297,22 +289,45 @@ public class CvSearchController {
      */
     private void initSortSelector() {
 
-        sortBySelector.getItems().add("First Name");
-        sortBySelector.getItems().add("Last Name");
-        sortBySelector.getItems().add("Chosen Skills");
+        sortBySelector.getItems().add(new SortApplicantsByName());
+        sortBySelector.getItems().add(new SortApplicantsBySkillsAmount());
 
         // Setting the first element as default, that is "All"
         sortBySelector.getSelectionModel().select(0);
 
-        orderBySelector.getItems().add("Low to High");
-        orderBySelector.getItems().add("High to Low");
+        orderByAscend.setOnMouseClicked(mouseEvent -> {
+            System.out.println("OrderByAscending pressed ! VALUE=" + orderByAscend.isSelected());
+            results.reverseOrder();
+            drawApplicantCards();
 
-        // Setting the first element as default, that is "All"
-        orderBySelector.getSelectionModel().select(0);
+            if (orderByAscend.isSelected()) {
+                orderByAscend.setMouseTransparent(true);
+                orderByDescend.setMouseTransparent(false);
+            }
+        });
+
+        orderByDescend.setOnMouseClicked(mouseEvent -> {
+            System.out.println("orderByDescending pressed ! VALUE=" + orderByDescend.isSelected());
+            results.reverseOrder();
+            drawApplicantCards();
+
+            if (orderByDescend.isSelected()) {
+                orderByDescend.setMouseTransparent(true);
+                orderByAscend.setMouseTransparent(false);
+            }
+        });
 
         sortBySelector.setOnAction(actionEvent -> {
             // TODO
-            System.out.println("ON ACTION !");
+            System.out.println("Selected sort: "
+                + sortBySelector.getSelectionModel().getSelectedItem());
+            results.setComparator(sortBySelector.getSelectionModel().getSelectedItem());
+
+            if (!skillLabels.isEmpty()) {
+                // Sorting only if search has been made
+                // otherwise ignore
+                drawApplicantCards();
+            }
         });
 
     }

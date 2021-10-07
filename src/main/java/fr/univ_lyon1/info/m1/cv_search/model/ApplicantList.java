@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class ApplicantList implements Iterable<Applicant>
-//TODO: checkstyle will (rightfully) complain about this brace. Make sure it does, and then fix it.
-{
+public class ApplicantList implements Iterable<Applicant> {
     private List<Applicant> list = new ArrayList<>();
 
     void add(Applicant a) {
@@ -34,5 +32,12 @@ public class ApplicantList implements Iterable<Applicant>
      */
     public void setList(ApplicantList list) {
         this.list = list.list;
+    }
+
+    /**
+     * Returns the content of the applicant list.
+     */
+    public List<Applicant> getList() {
+        return list;
     }
 }

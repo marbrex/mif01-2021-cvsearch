@@ -9,7 +9,7 @@ import org.yaml.snakeyaml.Yaml;
 
 public class ApplicantBuilder {
 
-    File file;
+    private File file;
 
     public ApplicantBuilder(File f) {
         this.file = f;

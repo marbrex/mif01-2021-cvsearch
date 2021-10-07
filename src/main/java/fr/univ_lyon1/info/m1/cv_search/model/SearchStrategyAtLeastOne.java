@@ -54,4 +54,9 @@ public class SearchStrategyAtLeastOne implements SearchStrategy {
 
         return res;
     }
+
+    @Override
+    public String toString() {
+        return "At Least One";
+    }
 }
