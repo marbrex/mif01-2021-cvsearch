@@ -318,7 +318,6 @@ public class CvSearchController {
         });
 
         sortBySelector.setOnAction(actionEvent -> {
-            // TODO
             System.out.println("Selected sort: "
                 + sortBySelector.getSelectionModel().getSelectedItem());
             results.setComparator(sortBySelector.getSelectionModel().getSelectedItem());

@@ -9,7 +9,10 @@ public class Applicant {
     private String name;
 
     public int getSkill(String string) {
-        return skills.getOrDefault(string, 0);
+        if ((string.getClass()).equals(java.lang.String.class))
+            return skills.getOrDefault(string, 0);
+        else
+            return -1;
     }
 
     public Map<String, Integer> getSkills() {

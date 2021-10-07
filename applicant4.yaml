@@ -1,0 +1,17 @@
+name: Beta Bishkeck
+skills:
+  c: 40
+  c++: 70
+  java: 50
+  python: 60
+  javascript: 70
+  c#: 80
+experience:
+  UCBL:
+    start: 2004
+    end: 2021
+    keywords:
+      - Scheme
+      - c
+      - c++
+      - java
