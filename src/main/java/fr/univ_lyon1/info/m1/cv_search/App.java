@@ -81,7 +81,9 @@ public class App extends Application {
      *
      * @param myScene Scene to switch
      */
-    public final void setScene(final Scene myScene) { App.scene = myScene; }
+    public final void setScene(final Scene myScene) {
+        App.scene = myScene;
+    }
 
     /**
      * Get the global scene.

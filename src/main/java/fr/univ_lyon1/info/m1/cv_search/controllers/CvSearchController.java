@@ -134,10 +134,10 @@ public class CvSearchController {
      */
     private void searchApplicants() {
 
-        // clearing already existing list of applicants on the view
-        applicantCardList.getChildren().clear();
+        // clearing already previous search results
         skillLabels.clear();
 
+        // setting static variables, so they can be accessed in model classes
         wantedSkillsCount = skillLabelContainer.getChildren().size();
         selectedValue = valueSelector.getValue();
         skillLabelContainer.getChildren().forEach(node -> {
@@ -157,6 +157,7 @@ public class CvSearchController {
         applicantCardList.getChildren().clear();
 
         // sorting the results
+        results.setComparator(sortBySelector.getSelectionModel().getSelectedItem());
         results.sort();
 
         cvFoundCountLbl.setText(String.valueOf(results.getList().size()));
@@ -298,7 +299,9 @@ public class CvSearchController {
         orderByAscend.setOnMouseClicked(mouseEvent -> {
             System.out.println("OrderByAscending pressed ! VALUE=" + orderByAscend.isSelected());
             results.reverseOrder();
-            drawApplicantCards();
+            if (!skillLabels.isEmpty()) {
+                drawApplicantCards();
+            }
 
             if (orderByAscend.isSelected()) {
                 orderByAscend.setMouseTransparent(true);
@@ -309,7 +312,9 @@ public class CvSearchController {
         orderByDescend.setOnMouseClicked(mouseEvent -> {
             System.out.println("orderByDescending pressed ! VALUE=" + orderByDescend.isSelected());
             results.reverseOrder();
-            drawApplicantCards();
+            if (!skillLabels.isEmpty()) {
+                drawApplicantCards();
+            }
 
             if (orderByDescend.isSelected()) {
                 orderByDescend.setMouseTransparent(true);
@@ -320,7 +325,6 @@ public class CvSearchController {
         sortBySelector.setOnAction(actionEvent -> {
             System.out.println("Selected sort: "
                 + sortBySelector.getSelectionModel().getSelectedItem());
-            results.setComparator(sortBySelector.getSelectionModel().getSelectedItem());
 
             if (!skillLabels.isEmpty()) {
                 // Sorting only if search has been made
