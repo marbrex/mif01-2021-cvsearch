@@ -216,7 +216,7 @@ public class CvSearchController {
      */
     private void initStrategySelector() {
         // setting an event handler
-        addSkillBtn.setOnMouseClicked(mouseEvent -> {
+        addSkillBtn.setOnAction(mouseEvent -> {
             String skillEntered = addSkillField.getCharacters().toString();
 
             if (skillEntered.equals("")) {
@@ -240,7 +240,7 @@ public class CvSearchController {
         });
 
         // setting an event handler
-        searchBtn.setOnMouseClicked(mouseEvent -> searchApplicants());
+        searchBtn.setOnAction(mouseEvent -> searchApplicants());
 
         // just for styling, needed to resize controls on window resizing
         HBox.setHgrow(searchBtn, Priority.ALWAYS);
