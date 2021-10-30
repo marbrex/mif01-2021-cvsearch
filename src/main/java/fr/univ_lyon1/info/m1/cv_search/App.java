@@ -1,7 +1,7 @@
 package fr.univ_lyon1.info.m1.cv_search;
 
 import fr.univ_lyon1.info.m1.cv_search.views.CvSearchView;
-import fr.univ_lyon1.info.m1.cv_search.views.JfxView;
+import fr.univ_lyon1.info.m1.cv_search.views.FxmlView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -27,7 +27,7 @@ public class App extends Application {
     @Override
     public final void start(final Stage primaryStage) throws Exception {
 
-        JfxView cvSearchView = new CvSearchView(primaryStage);
+        FxmlView cvSearchView = new CvSearchView(primaryStage);
 
     }
 

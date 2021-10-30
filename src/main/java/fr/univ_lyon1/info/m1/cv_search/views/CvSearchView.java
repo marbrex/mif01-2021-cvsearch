@@ -2,7 +2,7 @@ package fr.univ_lyon1.info.m1.cv_search.views;
 
 import javafx.stage.Stage;
 
-public class CvSearchView extends JfxView {
+public class CvSearchView extends FxmlView {
 
     public CvSearchView() {
         super();

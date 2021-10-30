@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 
-public abstract class JfxView {
+public abstract class FxmlView {
 
     private Stage stage;
     private URL fxml = getClass().getResource("/fxml/cv-search-view.fxml");
@@ -21,17 +21,17 @@ public abstract class JfxView {
     private double minHeight = 400;
     private String title = "CV Search App";
 
-    public JfxView() {
+    public FxmlView() {
         stage = new Stage();
         loadFxml();
     }
 
-    public JfxView(Stage stage) {
+    public FxmlView(Stage stage) {
         this.stage = stage;
         loadFxml();
     }
 
-    public JfxView(double width, double height, double minWidth, double minHeight, String title) {
+    public FxmlView(double width, double height, double minWidth, double minHeight, String title) {
         stage = new Stage();
 
         this.width = width;
