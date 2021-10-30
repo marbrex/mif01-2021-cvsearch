@@ -151,14 +151,17 @@ public class CvSearchController {
         drawApplicantCards();
     }
 
-    private void drawApplicantCards() {
+    private void drawApplicantCards(boolean reverse) {
 
         // clearing already existing list of applicants on the view
         applicantCardList.getChildren().clear();
 
         // sorting the results
-        results.setComparator(sortBySelector.getSelectionModel().getSelectedItem());
-        results.sort();
+        if (reverse) {
+            results.sort(sortBySelector.getSelectionModel().getSelectedItem().reversed());
+        } else {
+            results.sort();
+        }
 
         cvFoundCountLbl.setText(String.valueOf(results.getList().size()));
         if (results.getList().isEmpty()) {
@@ -172,6 +175,10 @@ public class CvSearchController {
                 applicantCardList.getChildren().add(createApplicantCard(applicant));
             }
         }
+    }
+
+    private void drawApplicantCards() {
+        drawApplicantCards(orderByDescend.isSelected());
     }
 
     /**
@@ -298,7 +305,7 @@ public class CvSearchController {
 
         orderByAscend.setOnMouseClicked(mouseEvent -> {
             System.out.println("OrderByAscending pressed ! VALUE=" + orderByAscend.isSelected());
-            results.reverseOrder();
+//            results.reverseOrder();
             if (!skillLabels.isEmpty()) {
                 drawApplicantCards();
             }
@@ -311,9 +318,9 @@ public class CvSearchController {
 
         orderByDescend.setOnMouseClicked(mouseEvent -> {
             System.out.println("orderByDescending pressed ! VALUE=" + orderByDescend.isSelected());
-            results.reverseOrder();
+//            results.reverseOrder();
             if (!skillLabels.isEmpty()) {
-                drawApplicantCards();
+                drawApplicantCards(true);
             }
 
             if (orderByDescend.isSelected()) {
@@ -325,6 +332,7 @@ public class CvSearchController {
         sortBySelector.setOnAction(actionEvent -> {
             System.out.println("Selected sort: "
                 + sortBySelector.getSelectionModel().getSelectedItem());
+            results.setComparator(sortBySelector.getSelectionModel().getSelectedItem());
 
             if (!skillLabels.isEmpty()) {
                 // Sorting only if search has been made
