@@ -226,7 +226,9 @@ public class CvSearchController {
                 }
             }
         }
-        if (skillsMatchCount != 0) skillsAverage = skillsSum / skillsMatchCount;
+        if (skillsMatchCount != 0) {
+            skillsAverage = skillsSum / skillsMatchCount;
+        }
         a.setSkillsAverage(skillsAverage);
 
         Label applicantSkillsLbl = new Label("Skills: | AVG " + skillsAverage);
