@@ -1,0 +1,24 @@
+name: J.Johna James
+skills:
+  java: 51
+  python: 45
+  php: 84
+  lua: 50
+  xml: 48
+  sql: 60
+  sparql: 68
+experience:
+  Oracle:
+    start: 2014
+    end: 2016
+    keywords:
+      - sql
+      - sparql
+      - php
+      - xml
+  IBM:
+    start: 2017
+    end: 2020
+    keywords:
+      - xml
+      - lua

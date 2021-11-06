@@ -18,7 +18,7 @@ import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAtLeastOne;
 import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAverage;
 import fr.univ_lyon1.info.m1.cv_search.model.SortApplicantsByName;
 import fr.univ_lyon1.info.m1.cv_search.model.SortApplicantsBySkillsAmount;
-
+import fr.univ_lyon1.info.m1.cv_search.model.SortApplicantsBySkillsAverage;
 import javafx.fxml.FXML;
 import javafx.geometry.Side;
 import javafx.scene.control.Button;
@@ -212,14 +212,28 @@ public class CvSearchController {
         Label applicantName = new Label(a.getName());
         card.getChildren().add(applicantName);
 
-        Label applicantSkillsLbl = new Label("Skills:");
+        int skillsMatchCount = 0;
+        int skillsSum = 0;
+        int skillsAverage = 0;
+        List<Label> applicantSkillLabels = new ArrayList<>();
+        for (Map.Entry<String, Integer> skill : a.getSkills().entrySet()) {
+            applicantSkillLabels.add(new Label(skill.getKey() + ": " + skill.getValue()));
+
+            for (Label label : skillLabels) {
+                if (label.getText().equals(skill.getKey())) {
+                    skillsSum += skill.getValue();
+                    ++skillsMatchCount;
+                }
+            }
+        }
+        if (skillsMatchCount != 0) skillsAverage = skillsSum / skillsMatchCount;
+        a.setSkillsAverage(skillsAverage);
+
+        Label applicantSkillsLbl = new Label("Skills: | AVG " + skillsAverage);
         applicantSkillsLbl.setFont(Font.font("Regular", FontWeight.BOLD, 12.0));
         card.getChildren().add(applicantSkillsLbl);
 
-        for (Map.Entry<String, Integer> skill : a.getSkills().entrySet()) {
-            Label applicantSkills = new Label(skill.getKey() + ": " + skill.getValue());
-            card.getChildren().add(applicantSkills);
-        }
+        card.getChildren().addAll(applicantSkillLabels);
 
         return card;
     }
@@ -349,6 +363,7 @@ public class CvSearchController {
 
         sortBySelector.getItems().add(new SortApplicantsByName());
         sortBySelector.getItems().add(new SortApplicantsBySkillsAmount());
+        sortBySelector.getItems().add(new SortApplicantsBySkillsAverage());
 
         // Setting the first element as default, that is "All"
         sortBySelector.getSelectionModel().select(0);

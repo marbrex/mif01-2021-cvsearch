@@ -6,6 +6,7 @@ import java.util.Map;
 
 public class Applicant {
     private Map<String, Integer> skills = new HashMap<>();
+    private int skillsAverage;
     private String name;
 
     public int getSkill(String string) {
@@ -26,5 +27,13 @@ public class Applicant {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getSkillsAverage() {
+        return skillsAverage;
+    }
+
+    public void setSkillsAverage(int skillsAverage) {
+        this.skillsAverage = skillsAverage;
     }
 }

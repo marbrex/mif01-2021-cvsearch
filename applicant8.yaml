@@ -1,0 +1,22 @@
+name: Patrick Bismark
+skills:
+  R: 78
+  prolog: 51
+  python: 69
+  sql: 60
+  javascript: 68
+experience:
+  Cisco:
+    start: 2012
+    end: 2017
+    keywords:
+      - R
+      - python
+      - sql
+  IBM:
+    start: 2017
+    end: 2018
+    keywords:
+      - python
+      - sql
+      - javascript

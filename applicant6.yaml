@@ -1,0 +1,18 @@
+name: Oryx Johnson
+skills:
+  c: 23
+  c++: 34
+  java: 37
+  php: 41
+  html: 40
+  css: 12
+  wordpress: 39
+experience:
+  Capgemini:
+    start: 2011
+    end: 2013
+    keywords:
+      - html
+      - css
+      - php
+      - wordpress
