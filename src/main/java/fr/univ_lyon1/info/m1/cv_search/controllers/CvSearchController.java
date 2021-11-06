@@ -1,24 +1,32 @@
 package fr.univ_lyon1.info.m1.cv_search.controllers;
 
-import fr.univ_lyon1.info.m1.cv_search.model.Applicant;
-import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategy;
-import fr.univ_lyon1.info.m1.cv_search.model.ApplicantSearchResults;
-import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAverage;
-import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAtLeastOne;
-import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAll;
-import fr.univ_lyon1.info.m1.cv_search.model.SortApplicantsBySkillsAmount;
-import fr.univ_lyon1.info.m1.cv_search.model.SortApplicantsByName;
-
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import fr.univ_lyon1.info.m1.cv_search.model.Applicant;
+import fr.univ_lyon1.info.m1.cv_search.model.ApplicantList;
+import fr.univ_lyon1.info.m1.cv_search.model.ApplicantListBuilder;
+import fr.univ_lyon1.info.m1.cv_search.model.ApplicantSearchResults;
+import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategy;
+import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAll;
+import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAtLeastOne;
+import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAverage;
+import fr.univ_lyon1.info.m1.cv_search.model.SortApplicantsByName;
+import fr.univ_lyon1.info.m1.cv_search.model.SortApplicantsBySkillsAmount;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Side;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory;
@@ -73,7 +81,12 @@ public class CvSearchController {
     @FXML
     private Label cvFoundCountLbl;
 
-    private ApplicantSearchResults results = new ApplicantSearchResults();
+    @FXML
+    private ContextMenu searchSuggestions;
+
+    private final ApplicantSearchResults results = new ApplicantSearchResults();
+
+    private final ApplicantList listApplicants = new ApplicantListBuilder(new File(".")).build();
 
     private static int wantedSkillsCount = 0;
     private static int selectedValue = 0;
@@ -211,10 +224,47 @@ public class CvSearchController {
         return card;
     }
 
+    private Set<String> findMatchingSkills(String text) {
+        Set<String> skillsFound = new HashSet<>();
+
+        listApplicants.getList().forEach(applicant -> {
+            applicant.getSkills().keySet().forEach(skill -> {
+                if (skill.contains(text) && !skill.equals(text)) {
+                    skillsFound.add(skill);
+                }
+            });
+        });
+
+        return skillsFound;
+    }
+
+    private void addSearchSuggestion(String text) {
+        MenuItem item = new MenuItem(text);
+        item.setOnAction(event -> {
+            addSkillField.setText(item.getText());
+            addSkillField.positionCaret(item.getText().length());
+        });
+        searchSuggestions.getItems().add(item);
+    }
+
     /**
      * Initializing search controls.
      */
     private void initStrategySelector() {
+
+        addSkillField.setOnKeyTyped(event -> {
+            if (!addSkillField.getText().isEmpty()) {
+                if (!searchSuggestions.isShowing() && !searchSuggestions.getItems().isEmpty()) {
+                    searchSuggestions.show(addSkillField, Side.BOTTOM, 0, 0);
+                }
+            } else {
+                searchSuggestions.hide();
+            }
+            Set<String> res = findMatchingSkills(addSkillField.getText());
+            searchSuggestions.getItems().clear();
+            res.forEach(this::addSearchSuggestion);
+        });
+
         // setting an event handler
         addSkillBtn.setOnAction(mouseEvent -> {
             String skillEntered = addSkillField.getCharacters().toString();
