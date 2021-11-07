@@ -1,6 +1,5 @@
 package fr.univ_lyon1.info.m1.cv_search.model.search;
 
-import fr.univ_lyon1.info.m1.cv_search.controllers.CvSearchController;
 import fr.univ_lyon1.info.m1.cv_search.model.applicant.Applicant;
 import fr.univ_lyon1.info.m1.cv_search.model.applicant.ApplicantList;
 import fr.univ_lyon1.info.m1.cv_search.model.applicant.ApplicantListBuilder;
@@ -16,32 +15,34 @@ public class SearchStrategyAtLeastOne implements SearchStrategy {
     public List<Applicant> search() {
         System.out.println("SearchStrategyAtLeastOne");
 
+        SearchState searchState = SearchState.getInstance();
+
         // building applicants' list,
         // that is loading the data from the ".yaml" files into the ApplicantList class
         ApplicantList listApplicants = new ApplicantListBuilder(new File(".")).build();
 
         List<Applicant> res = new ArrayList<>();
 
-        System.out.println("Value = " + CvSearchController.getSelectedValue());
+        System.out.println("Value = " + searchState.getSelectedValue());
 
         for (Applicant a : listApplicants) {
             boolean selected = false;
             System.out.println("Applicant = " + a.getName());
 
-            for (Label skill : CvSearchController.getSkillLabels()) {
+            for (Label skill : searchState.getSkillLabels()) {
                 String skillName = skill.getText();
                 System.out.println("Skill = " + skillName);
 
-                if (CvSearchController.isGreaterSignSelected()) {
+                if (searchState.isGreaterSignSelected()) {
                     System.out.println("greater sign selected");
-                    if (a.getSkill(skillName) >= CvSearchController.getSelectedValue()) {
+                    if (a.getSkill(skillName) >= searchState.getSelectedValue()) {
                         System.out.println("is greater or equal than Value");
                         selected = true;
                         break;
                     }
-                } else if (CvSearchController.isLessSignSelected()) {
+                } else if (searchState.isLessSignSelected()) {
                     System.out.println("less sign selected");
-                    if (a.getSkill(skillName) <= CvSearchController.getSelectedValue()) {
+                    if (a.getSkill(skillName) <= searchState.getSelectedValue()) {
                         System.out.println("is less or equal than Value");
                         selected = true;
                         break;

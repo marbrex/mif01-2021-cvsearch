@@ -12,6 +12,7 @@ import fr.univ_lyon1.info.m1.cv_search.model.applicant.Applicant;
 import fr.univ_lyon1.info.m1.cv_search.model.applicant.ApplicantList;
 import fr.univ_lyon1.info.m1.cv_search.model.applicant.ApplicantListBuilder;
 import fr.univ_lyon1.info.m1.cv_search.model.applicant.ApplicantSearchResults;
+import fr.univ_lyon1.info.m1.cv_search.model.search.SearchState;
 import fr.univ_lyon1.info.m1.cv_search.model.search.SearchStrategy;
 import fr.univ_lyon1.info.m1.cv_search.model.search.SearchStrategyAll;
 import fr.univ_lyon1.info.m1.cv_search.model.search.SearchStrategyAtLeastOne;
@@ -90,31 +91,7 @@ public class CvSearchController {
 
     private final ApplicantList listApplicants = new ApplicantListBuilder(new File(".")).build();
 
-    private static int wantedSkillsCount = 0;
-    private static int selectedValue = 0;
-    private static List<Label> skillLabels = new ArrayList<>();
-    private static boolean isGreaterSignSelected = true;
-    private static boolean isLessSignSelected = false;
-
-    public static int getWantedSkillsCount() {
-        return wantedSkillsCount;
-    }
-
-    public static int getSelectedValue() {
-        return selectedValue;
-    }
-
-    public static List<Label> getSkillLabels() {
-        return skillLabels;
-    }
-
-    public static boolean isGreaterSignSelected() {
-        return isGreaterSignSelected;
-    }
-
-    public static boolean isLessSignSelected() {
-        return isLessSignSelected;
-    }
+    private final SearchState searchState = SearchState.getInstance();
 
     public CvSearchController() {
         System.out.println("IN CvSearchController CONSTRUCTOR");
@@ -150,13 +127,13 @@ public class CvSearchController {
     private void searchApplicants() {
 
         // clearing already previous search results
-        skillLabels.clear();
+        searchState.getSkillLabels().clear();
 
         // setting static variables, so they can be accessed in model classes
-        wantedSkillsCount = skillLabelContainer.getChildren().size();
-        selectedValue = valueSelector.getValue();
+        searchState.setWantedSkillsCount(skillLabelContainer.getChildren().size());
+        searchState.setSelectedValue(valueSelector.getValue());
         skillLabelContainer.getChildren().forEach(node -> {
-            skillLabels.add((Label) node);
+            searchState.getSkillLabels().add((Label) node);
         });
 
         if (!results.getList().isEmpty()) {
@@ -221,7 +198,7 @@ public class CvSearchController {
         for (Map.Entry<String, Integer> skill : a.getSkills().entrySet()) {
             applicantSkillLabels.add(new Label(skill.getKey() + ": " + skill.getValue()));
 
-            for (Label label : skillLabels) {
+            for (Label label : searchState.getSkillLabels()) {
                 if (label.getText().equals(skill.getKey())) {
                     skillsSum += skill.getValue();
                     ++skillsMatchCount;
@@ -351,7 +328,7 @@ public class CvSearchController {
             // normally the value here should always be TRUE
             System.out
                 .println("signSelectorGreater pressed ! VALUE=" + signSelectorGreater.isSelected());
-            isGreaterSignSelected = signSelectorGreater.isSelected();
+            searchState.setGreaterSignSelected(signSelectorGreater.isSelected());
 
             if (signSelectorGreater.isSelected()) {
                 // disabling interaction with this button
@@ -360,18 +337,18 @@ public class CvSearchController {
                 signSelectorLess.setMouseTransparent(false);
                 // needed for a proper working of the selector
                 // this variable is being accessed outside of the class
-                isLessSignSelected = false;
+                searchState.setLessSignSelected(false);
             }
         });
 
         signSelectorLess.setOnMouseClicked(mouseEvent -> {
             System.out.println("signSelectorLess pressed ! VALUE=" + signSelectorLess.isSelected());
-            isLessSignSelected = signSelectorLess.isSelected();
+            searchState.setLessSignSelected(signSelectorLess.isSelected());
 
             if (signSelectorLess.isSelected()) {
                 signSelectorLess.setMouseTransparent(true);
                 signSelectorGreater.setMouseTransparent(false);
-                isGreaterSignSelected = false;
+                searchState.setGreaterSignSelected(false);
             }
         });
 
@@ -394,7 +371,7 @@ public class CvSearchController {
         orderByAscend.setOnMouseClicked(mouseEvent -> {
             System.out.println("OrderByAscending pressed ! VALUE=" + orderByAscend.isSelected());
 //            results.reverseOrder();
-            if (!skillLabels.isEmpty()) {
+            if (!searchState.getSkillLabels().isEmpty()) {
                 drawApplicantCards();
             }
 
@@ -407,7 +384,7 @@ public class CvSearchController {
         orderByDescend.setOnMouseClicked(mouseEvent -> {
             System.out.println("orderByDescending pressed ! VALUE=" + orderByDescend.isSelected());
 //            results.reverseOrder();
-            if (!skillLabels.isEmpty()) {
+            if (!searchState.getSkillLabels().isEmpty()) {
                 drawApplicantCards(true);
             }
 
@@ -422,7 +399,7 @@ public class CvSearchController {
                 + sortBySelector.getSelectionModel().getSelectedItem());
             results.setComparator(sortBySelector.getSelectionModel().getSelectedItem());
 
-            if (!skillLabels.isEmpty()) {
+            if (!searchState.getSkillLabels().isEmpty()) {
                 // Sorting only if search has been made
                 // otherwise ignore
                 drawApplicantCards();

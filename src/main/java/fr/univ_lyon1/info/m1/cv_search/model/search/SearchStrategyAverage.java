@@ -1,6 +1,5 @@
 package fr.univ_lyon1.info.m1.cv_search.model.search;
 
-import fr.univ_lyon1.info.m1.cv_search.controllers.CvSearchController;
 import fr.univ_lyon1.info.m1.cv_search.model.applicant.Applicant;
 import fr.univ_lyon1.info.m1.cv_search.model.applicant.ApplicantList;
 import fr.univ_lyon1.info.m1.cv_search.model.applicant.ApplicantListBuilder;
@@ -16,6 +15,8 @@ public class SearchStrategyAverage implements SearchStrategy {
     public List<Applicant> search() {
         System.out.println("SearchStrategyAverage");
 
+        SearchState searchState = SearchState.getInstance();
+
         // building applicants' list,
         // that is loading the data from the ".yaml" files into the ApplicantList class
         ApplicantList listApplicants = new ApplicantListBuilder(new File(".")).build();
@@ -26,22 +27,22 @@ public class SearchStrategyAverage implements SearchStrategy {
             int skillLevelSum = 0;
             int averageSkill;
 
-            for (Label skill : CvSearchController.getSkillLabels()) {
+            for (Label skill : searchState.getSkillLabels()) {
                 String skillName = skill.getText();
                 skillLevelSum += a.getSkill(skillName);
             }
-            if (CvSearchController.getWantedSkillsCount() != 0) {
-                averageSkill = skillLevelSum / CvSearchController.getWantedSkillsCount();
+            if (searchState.getWantedSkillsCount() != 0) {
+                averageSkill = skillLevelSum / searchState.getWantedSkillsCount();
             } else {
                 averageSkill = 1;
             }
 
-            if (CvSearchController.isGreaterSignSelected()) {
-                if (averageSkill >= CvSearchController.getSelectedValue()) {
+            if (searchState.isGreaterSignSelected()) {
+                if (averageSkill >= searchState.getSelectedValue()) {
                     res.add(a);
                 }
-            } else if (CvSearchController.isLessSignSelected()) {
-                if (averageSkill <= CvSearchController.getSelectedValue()) {
+            } else if (searchState.isLessSignSelected()) {
+                if (averageSkill <= searchState.getSelectedValue()) {
                     res.add(a);
                 }
             }
