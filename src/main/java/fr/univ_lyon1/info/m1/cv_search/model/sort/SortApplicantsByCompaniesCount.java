@@ -7,11 +7,11 @@ import java.util.Comparator;
 public class SortApplicantsByCompaniesCount implements Comparator<Applicant> {
 
     @Override
-    public int compare(Applicant a1, Applicant a2){
-        try{
+    public int compare(Applicant a1, Applicant a2) {
+        try {
             int result = Integer.compare(a1.getCompaniesCount(), a2.getCompaniesCount());
             return result;
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return -666;
         }
