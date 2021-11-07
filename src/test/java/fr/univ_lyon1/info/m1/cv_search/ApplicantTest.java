@@ -7,10 +7,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-import fr.univ_lyon1.info.m1.cv_search.model.Applicant.Applicant;
-import fr.univ_lyon1.info.m1.cv_search.model.Applicant.ApplicantBuilder;
-import fr.univ_lyon1.info.m1.cv_search.model.Applicant.ApplicantList;
-import fr.univ_lyon1.info.m1.cv_search.model.Applicant.ApplicantListBuilder;
+import fr.univ_lyon1.info.m1.cv_search.model.applicant.Applicant;
+import fr.univ_lyon1.info.m1.cv_search.model.applicant.ApplicantBuilder;
+import fr.univ_lyon1.info.m1.cv_search.model.applicant.ApplicantList;
+import fr.univ_lyon1.info.m1.cv_search.model.applicant.ApplicantListBuilder;
 
 public class ApplicantTest {
 

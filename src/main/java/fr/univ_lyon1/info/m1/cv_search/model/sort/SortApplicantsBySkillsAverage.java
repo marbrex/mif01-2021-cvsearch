@@ -1,6 +1,6 @@
-package fr.univ_lyon1.info.m1.cv_search.model.SortApplicant;
+package fr.univ_lyon1.info.m1.cv_search.model.sort;
 
-import fr.univ_lyon1.info.m1.cv_search.model.Applicant.Applicant;
+import fr.univ_lyon1.info.m1.cv_search.model.applicant.Applicant;
 
 import java.util.Comparator;
 
