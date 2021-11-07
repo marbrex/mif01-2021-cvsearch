@@ -1,4 +1,4 @@
-package fr.univ_lyon1.info.m1.cv_search.model;
+package fr.univ_lyon1.info.m1.cv_search.model.Applicant;
 
 import java.io.File;
 import java.io.FileInputStream;
