@@ -16,6 +16,8 @@ import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategy;
 import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAll;
 import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAtLeastOne;
 import fr.univ_lyon1.info.m1.cv_search.model.SearchStrategyAverage;
+import fr.univ_lyon1.info.m1.cv_search.model.SortApplicantsByCompaniesCount;
+import fr.univ_lyon1.info.m1.cv_search.model.SortApplicantsByExperienceYears;
 import fr.univ_lyon1.info.m1.cv_search.model.SortApplicantsByName;
 import fr.univ_lyon1.info.m1.cv_search.model.SortApplicantsBySkillsAmount;
 import fr.univ_lyon1.info.m1.cv_search.model.SortApplicantsBySkillsAverage;
@@ -237,6 +239,23 @@ public class CvSearchController {
 
         card.getChildren().addAll(applicantSkillLabels);
 
+        Label expLbl = new Label("Experience: | " + a.getExpYears() + " years");
+        expLbl.setFont(Font.font("Regular", FontWeight.BOLD, 12.0));
+        card.getChildren().add(expLbl);
+
+        a.getExpList().forEach(exp -> {
+            Label companyNameLbl =
+                    new Label(exp.getName() + ", " + exp.getStart() + "-" + exp.getEnd()
+                    + " (" + exp.getYears() + ")");
+            companyNameLbl.setFont(Font.font("Regular", FontWeight.BOLD, 12.0));
+            card.getChildren().add(companyNameLbl);
+
+            exp.getKeywords().forEach(kw -> {
+                Label kwLbl = new Label(kw);
+                card.getChildren().add(kwLbl);
+            });
+        });
+
         return card;
     }
 
@@ -366,6 +385,8 @@ public class CvSearchController {
         sortBySelector.getItems().add(new SortApplicantsByName());
         sortBySelector.getItems().add(new SortApplicantsBySkillsAmount());
         sortBySelector.getItems().add(new SortApplicantsBySkillsAverage());
+        sortBySelector.getItems().add(new SortApplicantsByExperienceYears());
+        sortBySelector.getItems().add(new SortApplicantsByCompaniesCount());
 
         // Setting the first element as default, that is "All"
         sortBySelector.getSelectionModel().select(0);
