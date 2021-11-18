@@ -89,7 +89,7 @@ public class CvSearchController {
 
     private final ApplicantSearchResults results = new ApplicantSearchResults();
 
-    private final ApplicantList listApplicants = new ApplicantListBuilder(new File(".")).build();
+    private final ApplicantList listApplicants = new ApplicantListBuilder(new File("cv/")).build();
 
     private final SearchState searchState = SearchState.getInstance();
 

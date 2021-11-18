@@ -17,7 +17,7 @@ public class ApplicantTest {
     @Test
     public void testReadApplicant() {
         // Given
-        ApplicantBuilder builder = new ApplicantBuilder("applicant1.yaml");
+        ApplicantBuilder builder = new ApplicantBuilder("cv/applicant1.yaml");
 
         // When
         Applicant a = builder.build();
@@ -30,7 +30,7 @@ public class ApplicantTest {
     @Test
     public void testReadManyApplicant() {
         // Given
-        ApplicantListBuilder builder = new ApplicantListBuilder(new File("."));
+        ApplicantListBuilder builder = new ApplicantListBuilder(new File("cv/"));
 
         // When
         ApplicantList list = builder.build();

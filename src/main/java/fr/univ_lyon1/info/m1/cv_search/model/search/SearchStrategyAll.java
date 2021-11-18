@@ -19,7 +19,7 @@ public class SearchStrategyAll implements SearchStrategy {
 
         // building applicants' list,
         // that is loading the data from the ".yaml" files into the ApplicantList class
-        ApplicantList listApplicants = new ApplicantListBuilder(new File(".")).build();
+        ApplicantList listApplicants = new ApplicantListBuilder(new File("cv/")).build();
 
         List<Applicant> res = new ArrayList<>();
 
